@@ -162,7 +162,7 @@ onMounted(load);
 
 <template>
   <section class="github-calendar">
-    <div class="flex items-center justify-between mb-3 px-3 py-2 bg-[color:var(--bg-soft)] border border-[color:var(--line)] font-mono text-[0.75rem] tracking-[0.1em]">
+    <div class="flex items-center justify-between mb-3 px-3 py-1.5 bg-[color:var(--bg-soft)] border border-[color:var(--line)] font-mono text-[0.75rem] tracking-[0.1em]">
       <div class="flex items-center gap-2 text-[color:var(--muted)]">
         <Icon icon="lucide:calendar" width="13" height="13" class="text-[color:var(--accent)]" />
         <span>{{ stats.total }} {{ lang === 'es' ? 'contribuciones' : 'contributions' }} · {{ year }}</span>
@@ -193,26 +193,26 @@ onMounted(load);
     </div>
 
     <template v-else>
-      <div class="stats-row flex flex-wrap gap-3 mb-3 font-mono text-[0.75rem]">
-        <div class="stat flex items-center gap-2 text-[color:var(--muted)]">
+      <div class="stats-row flex flex-wrap gap-2 mb-2 font-mono text-[0.7rem]">
+        <div class="stat flex items-center gap-1.5 text-[color:var(--muted)]">
           <span class="text-[color:var(--accent)]">{{ stats.total }}</span>
           <span>{{ lang === 'es' ? 'total' : 'total' }}</span>
         </div>
-        <div class="stat flex items-center gap-2 text-[color:var(--muted)]">
+        <div class="stat flex items-center gap-1.5 text-[color:var(--muted)]">
           <span class="text-[color:var(--accent)]">{{ stats.activeDays }}</span>
-          <span>{{ lang === 'es' ? 'días activos' : 'active days' }}</span>
+          <span>{{ lang === 'es' ? 'días' : 'days' }}</span>
         </div>
-        <div class="stat flex items-center gap-2 text-[color:var(--muted)]">
+        <div class="stat flex items-center gap-1.5 text-[color:var(--muted)]">
           <span class="text-[color:var(--accent)]">{{ stats.longest }} 🔥</span>
-          <span>{{ lang === 'es' ? 'mejor racha' : 'longest streak' }}</span>
+          <span>{{ lang === 'es' ? 'mejor racha' : 'best streak' }}</span>
         </div>
-        <div class="stat flex items-center gap-2 text-[color:var(--muted)]">
+        <div class="stat flex items-center gap-1.5 text-[color:var(--muted)]">
           <span class="text-[color:var(--accent)]">{{ stats.current }}</span>
-          <span>{{ lang === 'es' ? 'racha actual' : 'current streak' }}</span>
+          <span>{{ lang === 'es' ? 'actual' : 'current' }}</span>
         </div>
       </div>
 
-      <div class="calendar-wrap border border-[color:var(--line)] bg-[color:var(--bg-soft)] p-3 overflow-x-auto">
+      <div class="calendar-wrap border border-[color:var(--line)] bg-[color:var(--bg-soft)] p-2.5 overflow-x-auto">
         <div class="calendar-grid">
           <div class="day-labels-col font-mono text-[0.6rem] text-[color:var(--muted)]">
             <span></span>
@@ -253,7 +253,7 @@ onMounted(load);
           </div>
         </div>
 
-        <div class="flex items-center gap-2 mt-3 justify-end text-[0.65rem] text-[color:var(--muted)] font-mono">
+        <div class="flex items-center gap-2 mt-2 justify-end text-[0.65rem] text-[color:var(--muted)] font-mono">
           <span>{{ lang === 'es' ? 'Menos' : 'Less' }}</span>
           <span
             v-for="i in 5"
@@ -277,7 +277,7 @@ onMounted(load);
 }
 
 .stat {
-  padding: 0.2rem 0.55rem;
+  padding: 0.15rem 0.5rem;
   border: 1px solid var(--line);
   background: var(--bg-soft);
 }
@@ -294,9 +294,13 @@ onMounted(load);
   background: var(--line);
 }
 
+.calendar-wrap > .calendar-grid {
+  min-width: max-content;
+}
+
 .calendar-grid {
   display: flex;
-  gap: 4px;
+  gap: 6px;
 }
 
 .day-labels-col {
@@ -316,41 +320,45 @@ onMounted(load);
 }
 
 .calendar-main {
-  flex: 1;
+  width: fit-content;
+  flex: 0 0 auto;
   min-width: 0;
 }
 
 .month-row {
   display: grid;
-  grid-template-columns: repeat(53, 1fr);
+  grid-template-columns: repeat(53, 14px);
   gap: 2px;
   margin-bottom: 2px;
   position: relative;
-  height: 12px;
+  height: 14px;
 }
 
 .month-cell-label {
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   white-space: nowrap;
-  line-height: 12px;
+  line-height: 14px;
+  height: 14px;
   grid-row: 1;
 }
 
 .weeks-row {
   display: grid;
-  grid-template-columns: repeat(53, 1fr);
+  grid-template-columns: repeat(53, 14px);
   gap: 2px;
+  width: fit-content;
 }
 
 .week-col {
   display: grid;
-  grid-template-rows: repeat(7, 12px);
+  grid-template-rows: repeat(7, 14px);
   gap: 2px;
+  width: 14px;
 }
 
 .cell {
-  width: 100%;
-  height: 12px;
+  width: 14px;
+  height: 14px;
 }
 
 .legend-cell {

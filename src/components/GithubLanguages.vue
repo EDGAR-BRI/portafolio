@@ -104,7 +104,7 @@ onMounted(() => load());
 
 <template>
   <section class="github-langs">
-    <div class="flex items-center justify-between mb-4 px-3 py-2 bg-[color:var(--bg-soft)] border border-[color:var(--line)] font-mono text-[0.75rem] tracking-[0.1em]">
+    <div class="flex items-center justify-between mb-3 px-3 py-1.5 bg-[color:var(--bg-soft)] border border-[color:var(--line)] font-mono text-[0.75rem] tracking-[0.1em]">
       <div class="flex items-center gap-2 text-[color:var(--muted)]">
         <Icon icon="lucide:terminal" width="13" height="13" class="text-[color:var(--accent)]" />
         <span>gh-stack — {{ username }}</span>
@@ -148,7 +148,7 @@ onMounted(() => load());
       <li
         v-for="(l, i) in languages"
         :key="l.name"
-        class="lang-row flex items-center gap-3 px-4 py-2.5 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.04)] transition-colors duration-150"
+        class="lang-row flex items-center gap-3 px-4 py-3 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.04)] transition-colors duration-150"
         :style="{ animationDelay: `${i * 0.03}s` }"
       >
         <Icon :icon="l.icon" width="16" height="16" class="shrink-0" />

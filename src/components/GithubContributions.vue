@@ -107,13 +107,13 @@ function detailFor(ev: RawEvent): { count?: number; branch?: string; detail?: st
 
 const events = computed<EventItem[]>(() => {
   if (!data.value) return [];
-  const seen = new Set<string>();
-  const items: EventItem[] = [];
-  for (const e of data.value) {
-    const repo = e.repo.name;
-    if (seen.has(repo)) continue;
-    seen.add(repo);
-    if (items.length >= 12) break;
+    const seen = new Set<string>();
+    const items: EventItem[] = [];
+    for (const e of data.value) {
+      const repo = e.repo.name;
+      if (seen.has(repo)) continue;
+      seen.add(repo);
+      if (items.length >= 7) break;
     const meta = typeLabel(e.type);
     const d = detailFor(e);
     items.push({
@@ -139,7 +139,7 @@ onMounted(() => load());
 
 <template>
   <section class="github-contrib">
-    <div class="flex items-center justify-between mb-4 px-3 py-2 bg-[color:var(--bg-soft)] border border-[color:var(--line)] font-mono text-[0.75rem] tracking-[0.1em]">
+    <div class="flex items-center justify-between mb-3 px-3 py-1.5 bg-[color:var(--bg-soft)] border border-[color:var(--line)] font-mono text-[0.75rem] tracking-[0.1em]">
       <div class="flex items-center gap-2 text-[color:var(--muted)]">
         <Icon icon="lucide:activity" width="13" height="13" class="text-[color:var(--accent)]" />
         <span>gh-activity — {{ username }}</span>
@@ -180,14 +180,14 @@ onMounted(() => load());
       <li
         v-for="(ev, i) in events"
         :key="ev.id"
-        class="contrib-row px-4 py-3 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.03)] transition-colors duration-150"
+        class="contrib-row px-4 py-1.5 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.03)] transition-colors duration-150"
         :style="{ animationDelay: `${i * 0.03}s` }"
       >
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2.5">
           <Icon
             :icon="typeLabel(ev.type).icon"
-            width="15"
-            height="15"
+            width="13"
+            height="13"
             class="shrink-0"
             :style="{ color: typeLabel(ev.type).color }"
           />
@@ -195,32 +195,22 @@ onMounted(() => load());
             :href="ev.repoUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex-1 text-[color:var(--fg)] no-underline hover:text-[color:var(--accent)] transition-colors duration-150 truncate"
+            class="flex-1 text-[color:var(--fg)] no-underline hover:text-[color:var(--accent)] transition-colors duration-150 truncate text-[0.82rem]"
           >
             <span class="text-[color:var(--muted)]">{{ ev.action }}</span>
             <span class="mx-1.5 text-[color:var(--accent)]">›</span>
             <span class="text-[color:var(--accent)]">{{ ev.repoName }}</span>
+            <span v-if="ev.type === 'PushEvent' && ev.count" class="ml-2 text-[color:var(--muted)] text-[0.7rem]">
+              · {{ ev.branch }} · {{ ev.count }}
+            </span>
+            <span v-else-if="ev.type === 'PullRequestEvent' && ev.prTitle" class="ml-2 text-[color:var(--muted)] text-[0.7rem] truncate">
+              · {{ ev.prTitle }}
+            </span>
+            <span v-else-if="ev.type === 'ReleaseEvent' && ev.releaseName" class="ml-2 text-[color:var(--muted)] text-[0.7rem]">
+              · {{ ev.releaseName }}
+            </span>
           </a>
           <span class="w-20 shrink-0 text-right text-[0.7rem] text-[color:var(--muted)]">{{ ev.timeAgo }}</span>
-        </div>
-        <div v-if="ev.detail || ev.branch || ev.prTitle || ev.releaseName" class="mt-1.5 ml-7 text-[0.7rem] text-[color:var(--muted)] truncate">
-          <template v-if="ev.type === 'PushEvent' && ev.count">
-            <Icon icon="lucide:git-branch" width="11" height="11" class="inline-block align-[-1px]" />
-            <span class="ml-1">{{ ev.branch }}</span>
-            <span class="mx-1.5 text-[color:var(--line)]">·</span>
-            <span>{{ ev.count }} {{ lang === 'es' ? 'commits' : 'commits' }}</span>
-          </template>
-          <template v-else-if="ev.type === 'PullRequestEvent' && ev.prTitle">
-            <Icon icon="lucide:git-pull-request-arrow" width="11" height="11" class="inline-block align-[-1px]" />
-            <span class="ml-1">{{ ev.prTitle }}</span>
-          </template>
-          <template v-else-if="ev.type === 'ReleaseEvent' && ev.releaseName">
-            <Icon icon="lucide:tag" width="11" height="11" class="inline-block align-[-1px]" />
-            <span class="ml-1">{{ ev.releaseName }}</span>
-          </template>
-          <template v-else-if="ev.detail">
-            <span class="text-[color:var(--muted)]">{{ ev.detail }}</span>
-          </template>
         </div>
       </li>
     </ul>
