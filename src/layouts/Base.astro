@@ -2,6 +2,8 @@
 import '../styles/global.css';
 import LangToggle from '../components/LangToggle.vue';
 import BootScreen from '../components/BootScreen.vue';
+import ScrollProgress from '../components/ScrollProgress.vue';
+import TerminalNav from '../components/TerminalNav.vue';
 
 interface Props {
   title?: string;
@@ -40,11 +42,10 @@ const { title = 'Edgar Briceño · Portfolio', description = 'Full-stack develop
   </head>
   <body>
     <BootScreen client:load />
+    <ScrollProgress client:load />
 
     <header class="site-header">
-      <a href="#top" class="brand" aria-label="Home">
-        <span class="prompt">~/</span><span class="brand-name">edgar</span>
-      </a>
+      <TerminalNav client:load />
       <LangToggle client:load />
     </header>
 
@@ -81,16 +82,6 @@ const { title = 'Edgar Briceño · Portfolio', description = 'Full-stack develop
         transition: opacity 0.4s ease 0.55s;
       }
 
-      .brand {
-        font-family: 'JetBrains Mono', ui-monospace, monospace;
-        text-decoration: none;
-        color: var(--fg);
-        font-weight: 700;
-        font-size: 0.95rem;
-      }
-
-      .prompt { color: var(--accent); }
-
       main {
         max-width: 1200px;
         margin: 0 auto;
@@ -118,8 +109,8 @@ const { title = 'Edgar Briceño · Portfolio', description = 'Full-stack develop
       }
 
       @media (max-width: 640px) {
-        .site-header { padding: 0.75rem 1rem; }
-        main { padding: 0 1rem 3rem; }
+        .site-header { padding: 0.75rem 1rem; flex-wrap: wrap; gap: 0.5rem; }
+        .brand { font-size: 0.85rem; }
       }
     </style>
   </body>

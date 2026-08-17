@@ -20,7 +20,7 @@ const t = computed(() => translations[lang.value]);
       <li
         v-for="(s, i) in skills"
         :key="s.name"
-        class="skill corner relative flex items-center gap-2.5 px-4 py-3 border border-[color:var(--line)] m-px bg-[color:var(--bg-soft)] font-mono text-[0.85rem] text-[color:var(--fg)] transition-colors duration-150 hover:bg-[rgba(74,222,128,0.05)]"
+        class="skill skill-item corner relative flex items-center gap-2.5 px-4 py-3 border border-[color:var(--line)] m-px bg-[color:var(--bg-soft)] font-mono text-[0.85rem] text-[color:var(--fg)] transition-colors duration-150 hover:bg-[rgba(74,222,128,0.05)]"
         :style="{ animationDelay: `${i * 0.025}s` }"
       >
         <Icon :icon="s.icon" class="text-[color:var(--accent)] shrink-0" width="20" height="20" />
