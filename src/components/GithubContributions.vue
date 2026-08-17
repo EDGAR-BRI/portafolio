@@ -180,7 +180,7 @@ onMounted(() => load());
       <li
         v-for="(ev, i) in events"
         :key="ev.id"
-        class="contrib-row px-4 py-1.5 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.03)] transition-colors duration-150"
+        class="contrib-row px-4 py-2 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.03)] transition-colors duration-150"
         :style="{ animationDelay: `${i * 0.03}s` }"
       >
         <div class="flex items-center gap-2.5">

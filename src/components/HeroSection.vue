@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { Icon } from "@iconify/vue";
 import { useLang } from "../stores/lang";
 import { translations, social } from "../data/site";
@@ -8,13 +8,35 @@ import Typewriter from "./Typewriter.vue";
 const lang = useLang();
 const t = computed(() => translations[lang.value]);
 const roles = computed(() => t.value.hero.roles);
+
+const entered = ref(false);
+
+function startEnter() {
+  entered.value = true;
+}
+
+onMounted(() => {
+  if (typeof window === "undefined") return;
+  if (window.sessionStorage.getItem("portfolio.booted") === "1") {
+    startEnter();
+    return;
+  }
+  window.addEventListener("portfolio:boot-done", startEnter, { once: true });
+  setTimeout(() => {
+    if (!entered.value) startEnter();
+  }, 6000);
+});
 </script>
 
 <template>
-  <section class="hero pt-14 pb-12 flex flex-col gap-3" id="top">
-    <div class="flex flex-col -gap-2 ">
+  <section
+    class="hero pt-14 pb-12 flex flex-col gap-3"
+    :class="{ 'hero-enter': entered }"
+    id="top"
+  >
+    <div class="flex flex-col ">
       <p
-        class="mt-3 mb-0 font-mono text-[0.95rem] text-[color:var(--muted)] flex items-center gap-1.5"
+        class="mt-3 mb-0  font-mono text-[0.95rem] text-[color:var(--muted)] flex items-center gap-1.5"
       >
         <Icon
           icon="lucide:chevron-right"
@@ -25,7 +47,7 @@ const roles = computed(() => t.value.hero.roles);
         {{ t.hero.greeting }}
       </p>
       <h1
-        class="text-[clamp(2.5rem,6vw,4.5rem)] font-bold m-0 tracking-[-0.02em] font-mono hero-name"
+        class="text-[clamp(2.5rem,6vw,4.5rem)] font-bold m-0 tracking-[-0.02em] font-mono hero-name -translate-y-3 -translate-x-2"
       >
         {{ t.hero.name }}
       </h1>
@@ -118,6 +140,17 @@ const roles = computed(() => t.value.hero.roles);
 </template>
 
 <style scoped>
+.hero {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.hero.hero-enter {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .hero-name {
   background: linear-gradient(135deg, var(--fg) 0%, var(--accent) 100%);
   -webkit-background-clip: text;

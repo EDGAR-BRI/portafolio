@@ -47,6 +47,18 @@ export const translations = {
     repo_link: 'Ver repo',
     demo_link: 'Ver demo',
     featured: 'Destacado',
+    boot: {
+      title: 'edgar@briceño: ~/portfolio',
+      connect: '$ ssh edgar@briceño.portfolio',
+      connecting: 'Conectando a briceño.portfolio...',
+      ok: '[ OK ] Conexión establecida.',
+      ok_enter: '[ OK ] Entrando al portafolio...',
+      auth: '[ OK ] Autenticación por clave pública aceptada.',
+      welcome: 'Bienvenido al portafolio de Edgar Briceño.',
+      last: 'Último acceso:',
+      prompt: 'edgar@briceño:~/portfolio$',
+      enter: 'Pulse ENTER para continuar',
+    },
   },
   en: {
     nav: {
@@ -94,6 +106,18 @@ export const translations = {
     repo_link: 'View repo',
     demo_link: 'View demo',
     featured: 'Featured',
+    boot: {
+      title: 'edgar@briceño: ~/portfolio',
+      connect: '$ ssh edgar@briceño.portfolio',
+      connecting: 'Connecting to briceño.portfolio...',
+      ok: '[ OK ] Connection established.',
+      ok_enter: '[ OK ] Entering portfolio...',
+      auth: '[ OK ] Public-key authentication accepted.',
+      welcome: "Welcome to Edgar Briceño's portfolio.",
+      last: 'Last login:',
+      prompt: 'edgar@briceño:~/portfolio$',
+      enter: 'Press ENTER to continue',
+    },
   },
 } as const;
 

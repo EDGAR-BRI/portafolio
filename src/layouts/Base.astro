@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import LangToggle from '../components/LangToggle.vue';
+import BootScreen from '../components/BootScreen.vue';
 
 interface Props {
   title?: string;
@@ -27,6 +28,8 @@ const { title = 'Edgar Briceño · Portfolio', description = 'Full-stack develop
     <title>{title}</title>
   </head>
   <body>
+    <BootScreen client:load />
+
     <header class="site-header">
       <a href="#top" class="brand" aria-label="Home">
         <span class="prompt">~/</span><span class="brand-name">edgar</span>

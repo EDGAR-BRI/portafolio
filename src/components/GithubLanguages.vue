@@ -148,14 +148,14 @@ onMounted(() => load());
       <li
         v-for="(l, i) in languages"
         :key="l.name"
-        class="lang-row flex items-center gap-3 px-4 py-3 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.04)] transition-colors duration-150"
+        class="lang-row flex items-center gap- px-4 py-3 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.04)] transition-colors duration-150"
         :style="{ animationDelay: `${i * 0.03}s` }"
       >
         <Icon :icon="l.icon" width="16" height="16" class="shrink-0" />
         <span class="w-24 shrink-0 text-[0.8rem] text-[color:var(--fg)]">{{ l.name }}</span>
-        <div class="flex-1 h-5 flex items-center">
+        <div class="flex-1 h-4 flex items-center">
           <div
-            class="h-4 transition-[width] duration-700 ease-out"
+            class="h-3 transition-[width] duration-700 ease-out"
             :style="{
               width: l.pct + '%',
               background: langColor(l.name),
