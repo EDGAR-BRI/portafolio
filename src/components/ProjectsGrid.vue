@@ -51,7 +51,6 @@ const visible = computed(() => {
         v-for="(p, idx) in visible"
         :key="p.slug"
         class="project-card-wrap"
-        :style="{ animationDelay: `${idx * 0.04}s` }"
       >
         <article
           class="project-card corner"
@@ -145,7 +144,6 @@ const visible = computed(() => {
   gap: 0.85rem;
   width: 100%;
   transition: background 0.15s ease;
-  animation: fadeUp 0.4s ease-out backwards;
   min-height: 260px;
 }
 
@@ -274,10 +272,5 @@ const visible = computed(() => {
 .btn.ghost:hover {
   border-color: var(--accent);
   color: var(--accent);
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 </style>

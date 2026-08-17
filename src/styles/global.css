@@ -40,11 +40,21 @@ body {
   color: var(--fg);
   min-height: 100vh;
   font-feature-settings: "ss01", "ss02";
+}
+
+.bg-grid {
+  position: fixed;
+  top: -50%;
+  bottom: -50%;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  pointer-events: none;
   background-image:
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: 48px 48px;
-  background-attachment: fixed;
+  will-change: transform;
 }
 
 body::before {

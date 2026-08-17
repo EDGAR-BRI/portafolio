@@ -95,7 +95,8 @@ onMounted(() => {
 .hero {
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition: opacity 0.7s ease;
+  will-change: transform;
 }
 
 .hero.hero-enter {

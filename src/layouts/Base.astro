@@ -4,13 +4,81 @@ import LangToggle from '../components/LangToggle.vue';
 import BootScreen from '../components/BootScreen.vue';
 import ScrollProgress from '../components/ScrollProgress.vue';
 import TerminalNav from '../components/TerminalNav.vue';
+import { social } from '../data/site';
 
 interface Props {
   title?: string;
   description?: string;
 }
 
-const { title = 'Edgar Briceño · Portfolio', description = 'Full-stack developer building with Astro, Vue, AdonisJS and modern web tooling.' } = Astro.props;
+const siteUrl = new URL('/', Astro.site).toString().replace(/\/$/, '');
+
+const { title = 'Edgar Briceño · Full-stack Developer y Portafolio', description = 'Portafolio de Edgar Briceño, desarrollador full-stack especializado en Astro, Vue, AdonisJS y Node.js. Descubre mis proyectos, stack técnico y cómo contactarme.' } = Astro.props;
+
+const ogImage = new URL('/og.png', Astro.site).toString();
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: '¿Quién es Edgar Briceño?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Edgar Briceño es un desarrollador full-stack que construye aplicaciones web con foco en rendimiento, accesibilidad y experiencia de usuario. Trabaja con Astro, Vue, AdonisJS, TypeScript y Node.js.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Qué tecnologías usa Edgar Briceño?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Su stack principal incluye Astro, Vue 3, Pinia, React, TypeScript, JavaScript, AdonisJS, Node.js, Tailwind CSS, PostgreSQL, MySQL y Docker.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Cómo contactar a Edgar Briceño?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Puedes escribirle por correo a edgardev26@gmail.com o ver su código en github.com/EDGAR-BRI.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: '¿Qué tipo de proyectos desarrolla Edgar Briceño?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Desarrolla aplicaciones web full-stack, dashboards, herramientas CLI y frontends con React, además de participar en proyectos open source.',
+      },
+    },
+  ],
+};
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Edgar Briceño',
+  alternateName: 'Edgar Bri',
+  url: siteUrl,
+  email: 'mailto:' + social.email,
+  jobTitle: 'Full-stack Developer',
+  description: 'Desarrollador full-stack especializado en Astro, Vue, AdonisJS y Node.js. Apasionado por el código limpio y las comunidades open source.',
+  image: ogImage,
+  knowsAbout: ['Astro', 'Vue 3', 'React', 'TypeScript', 'Node.js', 'AdonisJS', 'Tailwind CSS', 'PostgreSQL', 'Docker'],
+  sameAs: [social.github],
+  mainEntityOfPage: canonical,
+};
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Edgar Briceño · Portfolio',
+  alternateName: 'Portafolio de Edgar Briceño',
+  url: siteUrl,
+  inLanguage: 'es',
+  description,
+  author: { '@type': 'Person', name: 'Edgar Briceño', url: siteUrl },
+};
 ---
 
 <!doctype html>
@@ -19,15 +87,46 @@ const { title = 'Edgar Briceño · Portfolio', description = 'Full-stack develop
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="author" content="Edgar Briceño" />
+    <meta name="theme-color" content="#06080b" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="alternate" hreflang="es" href={canonical} />
+    <link rel="alternate" hreflang="en" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Edgar Briceño · Portfolio" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:locale:alternate" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
     />
+
     <title>{title}</title>
+
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
     <script is:inline>
       (function () {
         try {
@@ -48,6 +147,8 @@ const { title = 'Edgar Briceño · Portfolio', description = 'Full-stack develop
       <TerminalNav client:load />
       <LangToggle client:load />
     </header>
+
+    <div class="bg-grid" aria-hidden="true"></div>
 
     <main>
       <slot />
