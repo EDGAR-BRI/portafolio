@@ -100,6 +100,7 @@ export const skills = [
   { name: 'Prisma',        icon: 'simple-icons:prisma' },
   { name: 'Supabase',      icon: 'simple-icons:supabase' },
   { name: 'PostgreSQL',    icon: 'logos:postgresql' },
+  { name: 'MySQL',         icon: 'logos:mysql' },
   { name: 'SQLite',        icon: 'logos:sqlite' },
   { name: 'Redis',         icon: 'logos:redis' },
   { name: 'Flutter',       icon: 'logos:flutter' },
