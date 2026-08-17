@@ -12,8 +12,8 @@ export const translations = {
       greeting: 'Hola, soy',
       name: 'Edgar Bri',
       roles: [
-        'Astro & Vue enthusiast',
         'Full-stack Developer',
+        'Astro & Vue enthusiast',
         'Backend con AdonisJS',
         'Aprendiz eterno',
       ],
@@ -54,8 +54,8 @@ export const translations = {
       greeting: "Hi, I'm",
       name: 'Edgar Bri',
       roles: [
-        'Astro & Vue enthusiast',
         'Full-stack Developer',
+        'Astro & Vue enthusiast',
         'Backend with AdonisJS',
         'Lifelong learner',
       ],
