@@ -154,10 +154,6 @@ const visible = computed(() => {
   z-index: 1;
 }
 
-.project-card.featured {
-  background: rgba(74, 222, 128, 0.025);
-}
-
 .card-head {
   display: flex;
   align-items: center;
