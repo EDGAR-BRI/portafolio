@@ -46,7 +46,7 @@ function tooltip(d: DayContribution): string {
   return `${dayLabel(d.date, lang.value)} — ${label}`;
 }
 
-const grid = computed(() => {
+const flatCells = computed(() => {
   const y = year.value;
   const first = new Date(`${y}-01-01T00:00:00`);
   const startOffset = first.getDay();
@@ -59,44 +59,42 @@ const grid = computed(() => {
     map.set(c.date.slice(0, 10), { level: c.level, count: c.count });
   }
 
-  const cells: { date: string; count: number; level: number; empty: boolean }[] = [];
+  // Grid columns: [day-labels] then week1..weekN. Rows: [month-row] then day1..day7.
+  // Column index = weekIndex + 2 (offset by day-label col). Row index = dayIndex + 2 (offset by month row).
+  const cells: { date: string; count: number; level: number; empty: boolean; col: number; row: number }[] = [];
   for (let day = 0; day < totalDays; day++) {
     const d = new Date(y, 0, day + 1);
+    const weekIndex = Math.floor((day + startOffset) / 7);
+    const dayIndex = (day + startOffset) % 7;
     const iso = `${y}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     if (day < startOffset) {
-      cells.push({ date: '', count: 0, level: 0, empty: true });
+      cells.push({ date: '', count: 0, level: 0, empty: true, col: weekIndex + 2, row: dayIndex + 2 });
     } else {
       const hit = map.get(iso);
-      cells.push({ date: iso, count: hit?.count ?? 0, level: hit?.level ?? 0, empty: false });
+      cells.push({ date: iso, count: hit?.count ?? 0, level: hit?.level ?? 0, empty: false, col: weekIndex + 2, row: dayIndex + 2 });
     }
   }
-
-  const weeks: typeof cells[] = [];
-  for (let i = 0; i < cells.length; i += 7) {
-    weeks.push(cells.slice(i, i + 7));
-  }
-  return weeks;
+  return cells;
 });
 
-// Calculate month label positions: the first week index where each month starts
+const dayLabels = ['', 'Lun', '', 'Mié', '', 'Vie', '', 'Dom']; // row 2..8
+
+// Calculate month label positions: the first column where each month starts
 const monthLabels = computed(() => {
   const y = year.value;
   const locale = lang.value === 'es' ? 'es-ES' : 'en-US';
   const labels: { name: string; weekIndex: number }[] = [];
   let lastMonth = -1;
 
-  for (let wi = 0; wi < grid.value.length; wi++) {
-    for (const cell of grid.value[wi]) {
-      if (cell.empty || !cell.date) continue;
-      const m = new Date(cell.date + 'T00:00:00').getMonth();
-      if (m !== lastMonth) {
-        labels.push({
-          name: new Date(cell.date + 'T00:00:00').toLocaleDateString(locale, { month: 'short' }),
-          weekIndex: wi,
-        });
-        lastMonth = m;
-      }
-      break;
+  for (const cell of flatCells.value) {
+    if (cell.empty || !cell.date) continue;
+    const m = new Date(cell.date + 'T00:00:00').getMonth();
+    if (m !== lastMonth) {
+      labels.push({
+        name: new Date(cell.date + 'T00:00:00').toLocaleDateString(locale, { month: 'short' }),
+        weekIndex: cell.col - 2,
+      });
+      lastMonth = m;
     }
   }
   return labels;
@@ -193,64 +191,28 @@ onMounted(load);
     </div>
 
     <template v-else>
-      <div class="stats-row flex flex-wrap gap-2 mb-2 font-mono text-[0.7rem]">
-        <div class="stat flex items-center gap-1.5 text-[color:var(--muted)]">
-          <span class="text-[color:var(--accent)]">{{ stats.total }}</span>
-          <span>{{ lang === 'es' ? 'total' : 'total' }}</span>
-        </div>
-        <div class="stat flex items-center gap-1.5 text-[color:var(--muted)]">
-          <span class="text-[color:var(--accent)]">{{ stats.activeDays }}</span>
-          <span>{{ lang === 'es' ? 'días' : 'days' }}</span>
-        </div>
-        <div class="stat flex items-center gap-1.5 text-[color:var(--muted)]">
-          <span class="text-[color:var(--accent)]">{{ stats.longest }} 🔥</span>
-          <span>{{ lang === 'es' ? 'mejor racha' : 'best streak' }}</span>
-        </div>
-        <div class="stat flex items-center gap-1.5 text-[color:var(--muted)]">
-          <span class="text-[color:var(--accent)]">{{ stats.current }}</span>
-          <span>{{ lang === 'es' ? 'actual' : 'current' }}</span>
-        </div>
-      </div>
 
-      <div class="calendar-wrap border border-[color:var(--line)] bg-[color:var(--bg-soft)] p-2.5 overflow-x-auto">
+      <div class="calendar-wrap border border-[color:var(--line)] bg-[color:var(--bg-soft)] p-2.5">
         <div class="calendar-grid">
-          <div class="day-labels-col font-mono text-[0.6rem] text-[color:var(--muted)]">
-            <span></span>
-            <span>{{ lang === 'es' ? 'Lun' : 'Mon' }}</span>
-            <span></span>
-            <span>{{ lang === 'es' ? 'Mié' : 'Wed' }}</span>
-            <span></span>
-            <span>{{ lang === 'es' ? 'Vie' : 'Fri' }}</span>
-            <span></span>
-            <span>{{ lang === 'es' ? 'Dom' : 'Sun' }}</span>
+          <div class="month-label" v-for="m in monthLabels" :key="m.name + m.weekIndex" :style="{ gridColumn: m.weekIndex + 2 }">
+            {{ m.name }}
           </div>
 
-          <div class="calendar-main">
-            <div class="month-row font-mono text-[0.6rem] text-[color:var(--muted)] h-3">
-              <span
-                v-for="m in monthLabels"
-                :key="m.name + m.weekIndex"
-                class="month-cell-label"
-                :style="{ gridColumnStart: m.weekIndex + 1 }"
-              >{{ m.name }}</span>
-            </div>
-
-            <div class="weeks-row">
-              <div
-                v-for="(week, wi) in grid"
-                :key="wi"
-                class="week-col"
-              >
-                <div
-                  v-for="(cell, di) in week"
-                  :key="di"
-                  class="cell"
-                  :style="{ background: cell.empty ? 'transparent' : levelColors[cell.level] }"
-                  :title="cell.empty ? '' : tooltip({ date: cell.date, count: cell.count, level: cell.level })"
-                ></div>
-              </div>
-            </div>
+          <div class="day-label" v-for="(label, i) in dayLabels" :key="label" :style="{ gridRow: i + 2 }">
+            {{ label }}
           </div>
+
+          <div
+            v-for="(cell, idx) in flatCells"
+            :key="idx"
+            class="cell"
+            :style="{
+              gridColumn: cell.col,
+              gridRow: cell.row,
+              background: cell.empty ? 'transparent' : levelColors[cell.level],
+            }"
+            :title="cell.empty ? '' : tooltip({ date: cell.date, count: cell.count, level: cell.level })"
+          ></div>
         </div>
 
         <div class="flex items-center gap-2 mt-2 justify-end text-[0.65rem] text-[color:var(--muted)] font-mono">
@@ -286,79 +248,37 @@ onMounted(load);
   scrollbar-width: thin;
 }
 
-.calendar-wrap::-webkit-scrollbar {
-  height: 6px;
-}
-
-.calendar-wrap::-webkit-scrollbar-thumb {
-  background: var(--line);
-}
-
-.calendar-wrap > .calendar-grid {
-  min-width: max-content;
-}
-
 .calendar-grid {
-  display: flex;
-  gap: 6px;
-}
-
-.day-labels-col {
   display: grid;
-  grid-template-rows: repeat(7, 12px);
+  grid-template-columns: 24px repeat(53, minmax(0, 1fr));
+  grid-template-rows: 16px repeat(7, auto);
   gap: 2px;
-  width: 24px;
-  align-items: center;
-  flex-shrink: 0;
+  align-items: start;
 }
 
-.day-labels-col > span {
-  height: 12px;
-  line-height: 12px;
-  font-size: 0.6rem;
-  white-space: nowrap;
-}
-
-.calendar-main {
-  width: fit-content;
-  flex: 0 0 auto;
-  min-width: 0;
-}
-
-.month-row {
-  display: grid;
-  grid-template-columns: repeat(53, 14px);
-  gap: 2px;
-  margin-bottom: 2px;
-  position: relative;
-  height: 14px;
-}
-
-.month-cell-label {
-  font-size: 0.65rem;
-  white-space: nowrap;
-  line-height: 14px;
-  height: 14px;
+.month-label {
   grid-row: 1;
+  font-size: 0.6rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--muted);
+  white-space: nowrap;
+  line-height: 16px;
+  overflow: visible;
 }
 
-.weeks-row {
-  display: grid;
-  grid-template-columns: repeat(53, 14px);
-  gap: 2px;
-  width: fit-content;
-}
-
-.week-col {
-  display: grid;
-  grid-template-rows: repeat(7, 14px);
-  gap: 2px;
-  width: 14px;
+.day-label {
+  grid-column: 1;
+  font-size: 0.6rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  line-height: 1;
 }
 
 .cell {
-  width: 14px;
-  height: 14px;
+  width: 100%;
+  aspect-ratio: 1;
 }
 
 .legend-cell {
