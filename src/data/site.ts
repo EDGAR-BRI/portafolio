@@ -1,0 +1,117 @@
+export type Lang = 'es' | 'en';
+
+export const translations = {
+  es: {
+    nav: {
+      projects: 'Proyectos',
+      live: 'GitHub live',
+      skills: 'Skills',
+      contact: 'Contacto',
+    },
+    hero: {
+      greeting: 'Hola, soy',
+      name: 'Edgar Bri',
+      roles: [
+        'Full-stack Developer',
+        'Astro & Vue enthusiast',
+        'Backend con AdonisJS',
+        'Aprendiz eterno',
+      ],
+      bio: 'Construyo aplicaciones web full-stack con foco en rendimiento, accesibilidad y una buena experiencia de usuario. Apasionado por el código limpio y las comunidades open source.',
+      cta_projects: 'Ver proyectos',
+      cta_contact: 'Hablemos',
+    },
+    sections: {
+      projects_title: 'Proyectos destacados',
+      projects_subtitle: 'Una selección de mi trabajo reciente — código, dashboards y herramientas.',
+      live_title: 'GitHub live',
+      live_subtitle: 'Actividad reciente de mis repos en GitHub.',
+      live_loading: 'Cargando repos...',
+      live_error: 'No se pudo cargar. Intenta recargar.',
+      live_stars: 'stars',
+      live_updated: 'actualizado',
+      skills_title: 'Stack & herramientas',
+      skills_subtitle: 'Tecnologías con las que trabajo día a día.',
+      contact_title: '¿Construimos algo juntos?',
+      contact_subtitle: 'Estoy disponible para freelance, prácticas y proyectos open source.',
+      contact_btn: 'Escríbeme',
+    },
+    footer: 'Construido con',
+    and: 'y',
+    repo_link: 'Ver repo',
+    demo_link: 'Ver demo',
+    featured: 'Destacado',
+  },
+  en: {
+    nav: {
+      projects: 'Projects',
+      live: 'GitHub live',
+      skills: 'Skills',
+      contact: 'Contact',
+    },
+    hero: {
+      greeting: "Hi, I'm",
+      name: 'Edgar Bri',
+      roles: [
+        'Full-stack Developer',
+        'Astro & Vue enthusiast',
+        'Backend with AdonisJS',
+        'Lifelong learner',
+      ],
+      bio: 'I build full-stack web applications focused on performance, accessibility and a great user experience. Passionate about clean code and open source communities.',
+      cta_projects: 'View projects',
+      cta_contact: "Let's talk",
+    },
+    sections: {
+      projects_title: 'Featured projects',
+      projects_subtitle: 'A selection of my recent work — code, dashboards and tools.',
+      live_title: 'GitHub live',
+      live_subtitle: 'Recent activity from my GitHub repos.',
+      live_loading: 'Loading repos...',
+      live_error: 'Could not load. Try refreshing.',
+      live_stars: 'stars',
+      live_updated: 'updated',
+      skills_title: 'Stack & tools',
+      skills_subtitle: 'Technologies I work with every day.',
+      contact_title: 'Shall we build something together?',
+      contact_subtitle: "I'm available for freelance, internships and open source projects.",
+      contact_btn: 'Email me',
+    },
+    footer: 'Built with',
+    and: 'and',
+    repo_link: 'View repo',
+    demo_link: 'View demo',
+    featured: 'Featured',
+  },
+} as const;
+
+export const skills = [
+  { name: 'Astro', icon: '🚀', level: 95 },
+  { name: 'Vue 3', icon: '💚', level: 88 },
+  { name: 'TypeScript', icon: '🟦', level: 90 },
+  { name: 'AdonisJS', icon: '⚙️', level: 85 },
+  { name: 'React', icon: '⚛️', level: 80 },
+  { name: 'Tailwind CSS', icon: '🎨', level: 92 },
+  { name: 'PHP', icon: '🐘', level: 75 },
+  { name: 'Flutter / Dart', icon: '🎯', level: 70 },
+  { name: 'Node.js', icon: '🟩', level: 88 },
+  { name: 'PostgreSQL', icon: '🐘', level: 80 },
+  { name: 'MongoDB', icon: '🍃', level: 70 },
+  { name: 'Docker', icon: '🐳', level: 75 },
+];
+
+export const social = {
+  github: 'https://github.com/EDGAR-BRI',
+  email: 'edgardev26@gmail.com',
+};
+
+export const featured_slugs = [
+  'GuardTech',
+  'internships-front',
+  'internships-back',
+  'LinuxComanTrainer',
+  'MI-CANCIONERO-FRONTEND',
+  'FRONTEND-SOCIOECONOMICO',
+  'Juego-par-e-impar',
+  'Memorizar-pares-de-letras',
+];

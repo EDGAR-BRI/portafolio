@@ -1,0 +1,96 @@
+---
+import '../styles/global.css';
+import LangToggle from '../components/LangToggle.vue';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'Edgar Bri · Portfolio', description = 'Full-stack developer building with Astro, Vue, AdonisJS and modern web tooling.' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a href="#top" class="brand" aria-label="Home">
+        <span class="prompt">~/</span><span class="brand-name">edgar</span>
+      </a>
+      <LangToggle client:load />
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <script is:inline>
+      (function () {
+        try {
+          var saved = localStorage.getItem('portfolio.lang');
+          var nav = (navigator.language || 'es').slice(0, 2).toLowerCase();
+          var lang = saved || (nav === 'en' ? 'en' : 'es');
+          document.documentElement.lang = lang;
+        } catch (e) {
+          document.documentElement.lang = 'es';
+        }
+      })();
+    </script>
+
+    <style>
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 2rem;
+        background: rgba(7, 9, 13, 0.7);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .brand {
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+        text-decoration: none;
+        color: var(--fg);
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+
+      .prompt {
+        color: var(--accent);
+      }
+
+      .brand-name {
+        margin-left: 2px;
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem 4rem;
+      }
+
+      @media (max-width: 640px) {
+        .site-header { padding: 0.75rem 1rem; }
+        main { padding: 0 1rem 3rem; }
+      }
+    </style>
+  </body>
+</html>

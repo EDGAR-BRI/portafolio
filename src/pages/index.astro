@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import HeroSection from '../components/HeroSection.vue';
+import ProjectsGrid from '../components/ProjectsGrid.vue';
+import LiveSection from '../components/LiveSection.vue';
+import SkillsSection from '../components/SkillsSection.vue';
+import ContactSection from '../components/ContactSection.vue';
+import SiteFooter from '../components/SiteFooter.vue';
+import { getCollection } from 'astro:content';
+
+const entries = await getCollection('proyectos');
+const projects = entries.map((e) => e.data);
+---
+
+<Base>
+  <HeroSection client:load />
+  <div id="projects">
+    <ProjectsGrid projects={projects} client:load />
+  </div>
+  <LiveSection client:visible />
+  <SkillsSection client:load />
+  <ContactSection client:load />
+  <SiteFooter client:load />
+</Base>
