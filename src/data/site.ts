@@ -49,6 +49,7 @@ export const translations = {
     featured: 'Destacado',
     boot: {
       title: 'edgar@briceño: ~/portfolio',
+      loading: '… cargando',
       connect: '$ ssh edgar@briceño.portfolio',
       connecting: 'Conectando a briceño.portfolio...',
       ok: '[ OK ] Conexión establecida.',
@@ -108,6 +109,7 @@ export const translations = {
     featured: 'Featured',
     boot: {
       title: 'edgar@briceño: ~/portfolio',
+      loading: '… loading',
       connect: '$ ssh edgar@briceño.portfolio',
       connecting: 'Connecting to briceño.portfolio...',
       ok: '[ OK ] Connection established.',

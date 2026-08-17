@@ -32,6 +32,7 @@ interface Line {
 const lines = computed<Line[]>(() => {
   const b = t.value;
   return [
+    { text: b.loading, type: 'loading' },
     { text: b.connect, type: 'cmd', typed: true },
     { text: b.connecting, type: 'out' },
     { text: b.ok, type: 'ok' },
@@ -56,8 +57,9 @@ const visibleLines = computed(() => {
 });
 
 function lineText(line: Line, index: number): string {
-  if (line.typed && index === 0 && !entering.value) {
-    return line.text.slice(0, typedChars.value);
+  if (line.typed && !entering.value) {
+    const cmdIndex = lines.value.findIndex((l) => l.typed);
+    if (index === cmdIndex) return line.text.slice(0, typedChars.value);
   }
   return line.text;
 }
@@ -84,28 +86,39 @@ function startSequence() {
     return;
   }
 
-  const cmd = lines.value[0];
+  const cmdIdx = lines.value.findIndex((l) => l.typed);
+  const cmd = cmdIdx >= 0 ? lines.value[cmdIdx] : null;
   if (!cmd) return;
+
+  revealed.value = 1;
+
   const total = cmd.text.length;
-  const speed = 45;
+  const speed = 30;
+  const typingDelay = 350;
+
   for (let i = 1; i <= total; i++) {
     schedule(() => {
       typedChars.value = i;
-    }, i * speed);
+      if (i === total) {
+        schedule(() => {
+          revealed.value = cmdIdx + 2;
+        }, 100);
+      }
+    }, typingDelay + i * speed);
   }
 
-  const cmdEnd = total * speed;
-  const rest = lines.value.slice(1);
-  const stepGap = 320;
+  const cmdEnd = typingDelay + total * speed;
+  const rest = lines.value.slice(cmdIdx + 1);
+  const stepGap = 280;
   rest.forEach((_, idx) => {
     schedule(() => {
-      revealed.value = idx + 2;
+      revealed.value = cmdIdx + 2 + idx + 1;
       if (idx === rest.length - 1) {
         schedule(() => {
           finished.value = true;
         }, 250);
       }
-    }, cmdEnd + 350 + idx * stepGap);
+    }, cmdEnd + 200 + idx * stepGap);
   });
 }
 
@@ -119,13 +132,79 @@ function typeEnterLines() {
 
   const totalMs = (all.length - 1) * 220 + 220;
   schedule(() => {
-    closing.value = true;
+    try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch {}
+    startMatrix();
     setTimeout(() => {
-      shown.value = false;
-      document.body.style.overflow = '';
-      window.dispatchEvent(new CustomEvent('portfolio:boot-done'));
-    }, 700);
+      closing.value = true;
+      document.documentElement.classList.add('boot-dropping');
+      setTimeout(() => {
+        document.documentElement.classList.remove('boot-pending', 'boot-dropping');
+        shown.value = false;
+        document.body.style.overflow = '';
+        try { window.sessionStorage.setItem(SESSION_KEY, '1'); } catch {}
+        window.dispatchEvent(new CustomEvent('portfolio:boot-done'));
+        stopMatrix();
+      }, 500);
+    }, 850);
   }, totalMs);
+}
+
+const matrixCanvas = ref<HTMLCanvasElement | null>(null);
+let matrixRaf: number | null = null;
+let matrixRunning = false;
+
+function startMatrix() {
+  const canvas = matrixCanvas.value;
+  if (!canvas) return;
+  matrixRunning = true;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  const resize = () => {
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+  };
+  resize();
+
+  const charset = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF<>{}[]$#@!*';
+  const fontSize = 16;
+  const cols = Math.floor(canvas.width / (fontSize * dpr));
+  const drops: number[] = new Array(cols).fill(0).map(() => Math.random() * canvas.height / dpr / fontSize);
+
+  const draw = () => {
+    if (!matrixRunning) return;
+    ctx.fillStyle = 'rgba(6, 8, 11, 0.08)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = `${fontSize * dpr}px 'JetBrains Mono', ui-monospace, monospace`;
+    for (let i = 0; i < drops.length; i++) {
+      const text = charset[Math.floor(Math.random() * charset.length)];
+      const x = i * fontSize * dpr;
+      const y = drops[i] * fontSize * dpr;
+
+      ctx.fillStyle = 'rgba(74, 222, 128, 0.55)';
+      ctx.fillText(text, x, y);
+
+      ctx.fillStyle = 'rgba(74, 222, 128, 0.9)';
+      ctx.fillText(text, x, y - fontSize * dpr);
+
+      if (y > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i] += 0.95;
+    }
+    matrixRaf = requestAnimationFrame(draw);
+  };
+  draw();
+}
+
+function stopMatrix() {
+  matrixRunning = false;
+  if (matrixRaf !== null) cancelAnimationFrame(matrixRaf);
+  matrixRaf = null;
 }
 
 function onEnter() {
@@ -150,12 +229,24 @@ function dismiss() {
 
 onMounted(() => {
   if (typeof window !== 'undefined') {
-    if (window.sessionStorage.getItem(SESSION_KEY) === '1') {
-      shown.value = false;
-      window.dispatchEvent(new CustomEvent('portfolio:boot-done'));
-      return;
-    }
-    window.sessionStorage.setItem(SESSION_KEY, '1');
+    keyHandler = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && (e.key === 'R' || e.key === 'r')) {
+        try { window.sessionStorage.removeItem(SESSION_KEY); } catch {}
+        return;
+      }
+      if (shown.value && e.key === 'Enter') {
+        e.preventDefault();
+        onEnter();
+      }
+    };
+    window.addEventListener('keydown', keyHandler, true);
+  }
+
+  if (typeof window !== 'undefined' && window.sessionStorage.getItem(SESSION_KEY) === '1') {
+    shown.value = false;
+    document.documentElement.classList.remove('boot-pending');
+    window.dispatchEvent(new CustomEvent('portfolio:boot-done'));
+    return;
   }
 
   const locale = lang.value === 'es' ? 'es-ES' : 'en-US';
@@ -169,14 +260,6 @@ onMounted(() => {
   });
 
   document.body.style.overflow = 'hidden';
-
-  keyHandler = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      onEnter();
-    }
-  };
-  window.addEventListener('keydown', keyHandler);
 
   startSequence();
 });
@@ -197,6 +280,7 @@ onUnmounted(() => {
     :aria-label="lang === 'es' ? 'Conexión al portafolio' : 'Connecting to portfolio'"
   >
     <div class="boot-bg"></div>
+    <canvas v-show="entering" ref="matrixCanvas" class="matrix-canvas" aria-hidden="true"></canvas>
     <div class="terminal-wrap">
       <div class="terminal corner" :aria-hidden="true">
         <div class="terminal-bar">
@@ -217,14 +301,9 @@ onUnmounted(() => {
             :class="['line-' + line.type]"
           >
             <span class="text">{{ lineText(line, idx) }}</span>
-            <span
-              v-if="line.typed && idx === 0 && typedChars < (lines[0]?.text.length ?? 0)"
-              class="caret"
-            >█</span>
-            <span
-              v-else-if="line.type === 'prompt' && finished && !entering"
-              class="caret"
-            >█</span>
+            <span v-if="line.type === 'loading'" class="dots">
+              <span>.</span><span>.</span><span>.</span>
+            </span>
           </div>
 
           <div v-if="finished && !entering" class="enter-prompt">
@@ -257,13 +336,23 @@ onUnmounted(() => {
 }
 
 .boot-overlay.entering .terminal {
-  transform: translateY(-110%);
-  transition: transform 0.7s cubic-bezier(0.55, 0.06, 0.68, 0.19);
+  opacity: 0;
+  transform: scale(0.94);
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .boot-overlay.entering .boot-bg {
   opacity: 0;
   transition: opacity 0.7s ease 0.1s;
+}
+
+.matrix-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
 }
 
 .boot-bg {
@@ -323,6 +412,29 @@ onUnmounted(() => {
 
 .line-cmd {
   color: var(--fg);
+}
+
+.line-loading {
+  color: var(--muted);
+}
+
+.line-loading .dots {
+  display: inline-block;
+  margin-left: 4px;
+}
+
+.line-loading .dots span {
+  opacity: 0;
+  animation: dotPulse 1.4s infinite;
+}
+
+.line-loading .dots span:nth-child(1) { animation-delay: 0s; }
+.line-loading .dots span:nth-child(2) { animation-delay: 0.2s; }
+.line-loading .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 0; }
+  20%, 60% { opacity: 1; }
 }
 
 .line-out {
