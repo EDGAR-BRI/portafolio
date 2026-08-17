@@ -77,6 +77,8 @@ const { title = 'Edgar Briceño · Portfolio', description = 'Full-stack develop
         background: rgba(6, 8, 11, 0.85);
         backdrop-filter: blur(10px);
         border-bottom: 1px solid var(--line);
+        opacity: 1;
+        transition: opacity 0.4s ease 0.55s;
       }
 
       .brand {
@@ -95,11 +97,15 @@ const { title = 'Edgar Briceño · Portfolio', description = 'Full-stack develop
         padding: 0 2rem 4rem;
         transform: translateY(0);
         opacity: 1;
-        transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-                    opacity 0.55s ease 0.1s;
+        transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                    opacity 0.45s ease;
       }
 
-      html.boot-pending .site-header,
+      html.boot-pending .site-header {
+        opacity: 0;
+        transition: none;
+      }
+
       html.boot-pending main {
         transform: translateY(-100vh);
         opacity: 0;

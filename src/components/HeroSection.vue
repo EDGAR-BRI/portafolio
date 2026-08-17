@@ -88,54 +88,6 @@ onMounted(() => {
         <Icon icon="lucide:arrow-right" width="14" height="14" />
       </a>
     </div>
-
-    <div
-      class="terminal corner relative bg-[color:var(--bg-soft)] border border-[color:var(--line)] overflow-hidden font-mono text-[0.85rem] max-w-160 mt-4"
-      aria-hidden="true"
-    >
-      <div
-        class="flex items-center gap-1.5 px-4 py-2.5 bg-black/40 border-b border-[color:var(--line)]"
-      >
-        <span class="w-2.5 h-2.5 bg-[#ff5f56]"></span>
-        <span class="w-2.5 h-2.5 bg-[#ffbd2e]"></span>
-        <span class="w-2.5 h-2.5 bg-[#27c93f]"></span>
-        <span
-          class="ml-2 text-[color:var(--muted)] text-[0.75rem] inline-flex items-center gap-1.5"
-        >
-          <Icon icon="lucide:terminal" width="12" height="12" />
-          edgar@briceño: ~/portfolio
-        </span>
-      </div>
-      <div class="p-4 leading-relaxed">
-        <div class="text-[color:var(--fg)]">
-          <span class="text-[color:var(--accent)]">$</span> whoami
-        </div>
-        <div class="text-[color:var(--muted)] mb-2">
-          {{ t.hero.name }} — {{ t.hero.roles[0] }}
-        </div>
-        <div class="text-[color:var(--fg)]">
-          <span class="text-[color:var(--accent)]">$</span> ls ./stack
-        </div>
-        <div class="text-[color:var(--muted)] mb-2">
-          Astro · Vue · TypeScript · AdonisJS · React · Tailwind
-        </div>
-        <div class="text-[color:var(--fg)]">
-          <span class="text-[color:var(--accent)]">$</span> cat ./contact.md
-        </div>
-        <div class="text-[color:var(--muted)] mb-2">
-          →
-          <a
-            :href="`mailto:${social.email}`"
-            class="text-[color:var(--accent)] no-underline"
-            >{{ social.email }}</a
-          >
-        </div>
-        <div class="text-[color:var(--fg)]">
-          <span class="text-[color:var(--accent)]">$</span>
-          <span class="terminal-cursor">█</span>
-        </div>
-      </div>
-    </div>
   </section>
 </template>
 

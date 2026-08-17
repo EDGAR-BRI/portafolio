@@ -62,6 +62,31 @@ const visibleLines = computed(() => {
   return lines.value.slice(0, revealed.value);
 });
 
+interface Row {
+  key: string;
+  items: { line: Line; index: number }[];
+}
+
+const visibleRows = computed<Row[]>(() => {
+  const rows: Row[] = [];
+  let i = 0;
+  const list = visibleLines.value;
+  while (i < list.length) {
+    const cur = list[i];
+    if (cur.type === 'pwd-prompt' && i + 1 < list.length && list[i + 1].type === 'pwd') {
+      rows.push({ key: `grp-${i}`, items: [
+        { line: cur, index: i },
+        { line: list[i + 1], index: i + 1 },
+      ]});
+      i += 2;
+    } else {
+      rows.push({ key: `row-${i}`, items: [{ line: cur, index: i }] });
+      i += 1;
+    }
+  }
+  return rows;
+});
+
 function lineText(line: Line, index: number): string {
   if (line.typed && !entering.value) {
     const chars = typedChars.value.get(index) ?? 0;
@@ -296,12 +321,17 @@ onUnmounted(() => {
 
         <div class="terminal-body">
           <div
-            v-for="(line, idx) in visibleLines"
-            :key="idx + '-' + (entering ? 'e' : 'b')"
+            v-for="row in visibleRows"
+            :key="row.key + '-' + (entering ? 'e' : 'b')"
             class="line"
-            :class="['line-' + line.type]"
+            :class="row.items.length > 1 ? 'line-pwd-row' : 'line-' + row.items[0].line.type"
           >
-            <span class="text">{{ lineText(line, idx) }}</span>
+            <span
+              v-for="(item, j) in row.items"
+              :key="j"
+              class="line-segment"
+              :class="'line-' + item.line.type"
+            >{{ lineText(item.line, item.index) }}</span>
           </div>
 
           <div v-if="phase === 'waiting-send-pwd'" class="enter-prompt">
@@ -399,6 +429,15 @@ onUnmounted(() => {
   white-space: pre-wrap;
   word-break: break-word;
   animation: fadeIn 0.25s ease-out;
+}
+
+.line-segment {
+  display: inline;
+  white-space: pre;
+}
+
+.line-pwd-row {
+  white-space: pre;
 }
 
 .line-cmd {
