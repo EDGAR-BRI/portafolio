@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLang } from '../stores/lang';
-import { featured_slugs, translations } from '../data/site';
+import { featured_slugs, all_featured_slugs, translations } from '../data/site';
 
 interface Repo {
   id: number;
@@ -49,6 +49,10 @@ function langColor(name: string | null): string {
   return name && map[name] ? map[name] : '#8b949e';
 }
 
+function isFeatured(name: string): boolean {
+  return featured_slugs.includes(name);
+}
+
 async function load() {
   loading.value = true;
   error.value = null;
@@ -56,10 +60,15 @@ async function load() {
     const res = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data: Repo[] = await res.json();
-    const whitelist = new Set(featured_slugs);
+    const whitelist = new Set(all_featured_slugs);
     repos.value = data
       .filter((r) => !r.fork && whitelist.has(r.name))
-      .sort((a, b) => new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime());
+      .sort((a, b) => {
+        const aF = isFeatured(a.name) ? 0 : 1;
+        const bF = isFeatured(b.name) ? 0 : 1;
+        if (aF !== bF) return aF - bF;
+        return new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime();
+      });
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'unknown';
   } finally {
@@ -121,8 +130,12 @@ onMounted(load);
           <header class="flex items-center gap-2 mb-2">
             <Icon icon="lucide:git-branch" width="14" height="14" class="text-[color:var(--accent)] shrink-0" />
             <span class="font-mono font-semibold text-[color:var(--fg)] flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[0.9rem]">{{ repo.name }}</span>
-            <span v-if="featured_slugs.indexOf(repo.name) < 5" class="text-[color:var(--accent)] inline-flex">
-              <Icon icon="lucide:star" width="12" height="12" />
+            <span
+              v-if="isFeatured(repo.name)"
+              class="featured-tag inline-flex items-center gap-1 px-1.5 py-0.5 text-[0.6rem] font-bold tracking-[0.1em] bg-[color:var(--accent)] text-[color:var(--bg)] font-mono"
+            >
+              <Icon icon="lucide:star" width="9" height="9" />
+              {{ t.featured }}
             </span>
           </header>
 

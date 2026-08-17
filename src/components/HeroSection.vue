@@ -15,8 +15,6 @@ const roles = computed(() => t.value.hero.roles);
     <div class="inline-flex items-center gap-2 font-mono text-[0.75rem] text-[color:var(--fg)] bg-[color:var(--bg-soft)] border border-[color:var(--line)] py-1 px-2.5 w-fit tracking-[0.05em]">
       <Icon icon="lucide:terminal" width="14" height="14" />
       <span>~/portfolio</span>
-      <span class="w-1.5 h-1.5 bg-[color:var(--accent)] shadow-[0_0_6px_var(--accent)] animate-pulse"></span>
-      <span class="text-[color:var(--muted)]">online</span>
     </div>
 
     <p class="mt-3 mb-0 font-mono text-[0.95rem] text-[color:var(--muted)] flex items-center gap-1.5">
@@ -31,20 +29,22 @@ const roles = computed(() => t.value.hero.roles);
     </h2>
     <p class="text-[1rem] text-[color:var(--muted)] max-w-160 leading-relaxed mt-2 mb-6">{{ t.hero.bio }}</p>
 
-    <div class="flex gap-3 flex-wrap mb-12">
+    <div class="flex gap-4 flex-wrap mb-12">
       <a
         href="#projects"
-        class="inline-flex items-center gap-2 px-4.5 py-2.5 font-semibold no-underline text-[0.9rem] font-mono tracking-[0.02em] border border-transparent transition-colors duration-150 bg-[color:var(--accent)] text-[color:var(--bg)] hover:bg-transparent hover:text-[color:var(--accent)] hover:border-[color:var(--accent)]"
+        class="btn-primary inline-flex items-center gap-2 px-1 py-1 no-underline text-[0.9rem] font-mono tracking-[0.02em] text-[color:var(--accent)] transition-colors duration-150 hover:text-[color:var(--fg)]"
       >
-        {{ t.hero.cta_projects }}
-        <Icon icon="lucide:arrow-down" width="16" height="16" />
+        <span class="prompt-arrow">&gt;</span>
+        <span class="underline underline-offset-4 decoration-[color:var(--accent)]/40 group-hover:decoration-[color:var(--accent)]">{{ t.hero.cta_projects }}</span>
+        <Icon icon="lucide:arrow-down" width="14" height="14" />
       </a>
       <a
         :href="`mailto:${social.email}`"
-        class="inline-flex items-center gap-2 px-4.5 py-2.5 font-semibold no-underline text-[0.9rem] font-mono tracking-[0.02em] transition-colors duration-150 bg-transparent text-[color:var(--fg)] border border-[color:var(--line)] hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+        class="btn-ghost inline-flex items-center gap-2 px-1 py-1 no-underline text-[0.9rem] font-mono tracking-[0.02em] text-[color:var(--muted)] transition-colors duration-150 hover:text-[color:var(--accent)]"
       >
-        {{ t.hero.cta_contact }}
-        <Icon icon="lucide:arrow-right" width="16" height="16" />
+        <span class="prompt-arrow muted-arrow">·</span>
+        <span class="underline underline-offset-4 decoration-[color:var(--line)]">{{ t.hero.cta_contact }}</span>
+        <Icon icon="lucide:arrow-right" width="14" height="14" />
       </a>
     </div>
 
@@ -77,6 +77,15 @@ const roles = computed(() => t.value.hero.roles);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.prompt-arrow {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.muted-arrow {
+  color: var(--muted);
 }
 
 .terminal-cursor {

@@ -88,22 +88,22 @@ export const translations = {
 } as const;
 
 export const skills = [
-  { name: 'Astro',         icon: 'logos:astro-icon',         level: 95 },
-  { name: 'Vue 3',         icon: 'logos:vue',               level: 88 },
-  { name: 'TypeScript',    icon: 'logos:typescript-icon',   level: 90 },
-  { name: 'AdonisJS',      icon: 'simple-icons:adonisjs',   level: 85 },
-  { name: 'React',         icon: 'logos:react',             level: 80 },
-  { name: 'Tailwind CSS',  icon: 'logos:tailwindcss-icon',  level: 92 },
-  { name: 'PHP',           icon: 'logos:php',               level: 75 },
-  { name: 'Flutter',       icon: 'logos:flutter',           level: 70 },
-  { name: 'Dart',          icon: 'logos:dart',              level: 70 },
-  { name: 'Node.js',       icon: 'logos:nodejs-icon',       level: 88 },
-  { name: 'PostgreSQL',    icon: 'logos:postgresql',        level: 80 },
-  { name: 'MongoDB',       icon: 'logos:mongodb-icon',      level: 70 },
-  { name: 'Docker',        icon: 'logos:docker-icon',       level: 75 },
-  { name: 'HTML',          icon: 'vscode-icons:file-type-html',     level: 90 },
-  { name: 'CSS',           icon: 'vscode-icons:file-type-css',      level: 88 },
-  { name: 'JavaScript',    icon: 'logos:javascript',        level: 90 },
+  { name: 'Astro',         icon: 'logos:astro-icon' },
+  { name: 'Vue 3',         icon: 'logos:vue' },
+  { name: 'TypeScript',    icon: 'logos:typescript-icon' },
+  { name: 'AdonisJS',      icon: 'simple-icons:adonisjs' },
+  { name: 'React',         icon: 'logos:react' },
+  { name: 'Tailwind CSS',  icon: 'logos:tailwindcss-icon' },
+  { name: 'PHP',           icon: 'logos:php' },
+  { name: 'Flutter',       icon: 'logos:flutter' },
+  { name: 'Dart',          icon: 'logos:dart' },
+  { name: 'Node.js',       icon: 'logos:nodejs-icon' },
+  { name: 'PostgreSQL',    icon: 'logos:postgresql' },
+  { name: 'Redis',         icon: 'logos:redis' },
+  { name: 'Docker',        icon: 'logos:docker-icon' },
+  { name: 'HTML',          icon: 'vscode-icons:file-type-html' },
+  { name: 'CSS',           icon: 'vscode-icons:file-type-css' },
+  { name: 'JavaScript',    icon: 'logos:javascript' },
 ];
 
 export const social = {
@@ -118,6 +118,10 @@ export const featured_slugs = [
   'LinuxComanTrainer',
   'MI-CANCIONERO-FRONTEND',
   'FRONTEND-SOCIOECONOMICO',
+];
+
+export const all_featured_slugs = [
+  ...featured_slugs,
   'Juego-par-e-impar',
   'Memorizar-pares-de-letras',
 ];

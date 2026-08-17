@@ -29,9 +29,7 @@ const { title = 'Edgar Bri · Portfolio', description = 'Full-stack developer bu
   <body>
     <header class="site-header">
       <a href="#top" class="brand" aria-label="Home">
-        <span class="prompt">[</span><span class="brand-name">edgar</span><span class="prompt">]</span>
-        <span class="brand-sep">//</span>
-        <span class="brand-path">portfolio</span>
+        <span class="prompt">~/</span><span class="brand-name">edgar</span>
       </a>
       <LangToggle client:load />
     </header>
@@ -71,17 +69,11 @@ const { title = 'Edgar Bri · Portfolio', description = 'Full-stack developer bu
         font-family: 'JetBrains Mono', ui-monospace, monospace;
         text-decoration: none;
         color: var(--fg);
-        font-weight: 600;
+        font-weight: 700;
         font-size: 0.95rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        letter-spacing: 0.02em;
       }
 
       .prompt { color: var(--accent); }
-      .brand-sep { color: var(--muted); margin: 0 0.2rem; }
-      .brand-path { color: var(--muted); }
 
       main {
         max-width: 1200px;
