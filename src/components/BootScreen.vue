@@ -15,7 +15,7 @@ const finished = ref(false);
 const entering = ref(false);
 const closing = ref(false);
 
-type Phase = 'typing' | 'waiting-pwd' | 'finished';
+type Phase = 'typing' | 'waiting-send-pwd' | 'finished';
 const phase = ref<Phase>('typing');
 
 let timers: ReturnType<typeof setTimeout>[] = [];
@@ -124,6 +124,9 @@ function startSequence() {
     .map((l, i) => ({ line: l, idx: i }))
     .filter((x) => x.line.typed && x.line.type !== 'pwd');
 
+  const pwdIdx = lines.value.findIndex((l) => l.type === 'pwd');
+  const pwdLine = pwdIdx >= 0 ? lines.value[pwdIdx] : null;
+
   const firstTypedIdx = initialTyped[0]?.idx ?? 0;
   revealed.value = firstTypedIdx + 1;
   setTyped(firstTypedIdx, 1);
@@ -140,35 +143,33 @@ function startSequence() {
     cursorMs += total * speed + 60;
   }
 
-  const pwdPromptIdx = initialTyped.length > 1 ? initialTyped[1].idx : 1;
+  if (pwdLine && pwdIdx >= 0) {
+    revealed.value = pwdIdx + 1;
+    setTyped(pwdIdx, 1);
+    const total = pwdLine.text.length;
+    const speed = pwdLine.speed ?? 35;
+    for (let i = 1; i <= total; i++) {
+      schedule(() => {
+        setTyped(pwdIdx, i);
+      }, cursorMs + i * speed);
+    }
+    cursorMs += total * speed + 60;
+  }
+
   schedule(() => {
-    revealed.value = pwdPromptIdx + 1;
-    phase.value = 'waiting-pwd';
-    startAutoEnter(2000);
+    phase.value = 'waiting-send-pwd';
+    startAutoEnter(5000);
   }, cursorMs + 80);
 }
 
-function typePasswordAndContinue() {
-  if (phase.value !== 'waiting-pwd') return;
+function sendPassword() {
+  if (phase.value !== 'waiting-send-pwd') return;
   clearTimers();
   clearAutoEnter();
   phase.value = 'typing';
 
   const pwdIdx = lines.value.findIndex((l) => l.type === 'pwd');
-  const pwdLine = lines.value[pwdIdx];
-  if (!pwdLine) return;
-
-  revealed.value = pwdIdx + 1;
-  const total = pwdLine.text.length;
-  const speed = pwdLine.speed ?? 35;
-
-  let cursor = 0;
-  for (let i = 1; i <= total; i++) {
-    schedule(() => {
-      setTyped(pwdIdx, i);
-    }, cursor + i * speed);
-  }
-  cursor += total * speed + 60;
+  if (pwdIdx < 0) return;
 
   const rest = lines.value.slice(pwdIdx + 1);
   rest.forEach((line, idx) => {
@@ -181,7 +182,7 @@ function typePasswordAndContinue() {
           startAutoEnter(5000);
         }, 220);
       }
-    }, cursor + 80 + idx * 260);
+    }, idx * 260);
   });
 }
 
@@ -216,8 +217,8 @@ function onEnter() {
     revealAll();
     return;
   }
-  if (phase.value === 'waiting-pwd') {
-    typePasswordAndContinue();
+  if (phase.value === 'waiting-send-pwd') {
+    sendPassword();
     return;
   }
   if (phase.value === 'finished') {
@@ -303,7 +304,7 @@ onUnmounted(() => {
             <span class="text">{{ lineText(line, idx) }}</span>
           </div>
 
-          <div v-if="phase === 'waiting-pwd'" class="enter-prompt">
+          <div v-if="phase === 'waiting-send-pwd'" class="enter-prompt">
             <span class="bracket">[</span>
             <span class="enter-text">{{ t.send_password }}</span>
             <span class="bracket">]</span>
