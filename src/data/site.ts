@@ -47,6 +47,25 @@ export const translations = {
     repo_link: 'Ver repo',
     demo_link: 'Ver demo',
     featured: 'Destacado',
+    faq_title: 'Preguntas frecuentes',
+    faq: [
+      {
+        q: '¿Quién es Edgar Briceño?',
+        a: 'Edgar Briceño es un desarrollador full-stack que construye aplicaciones web con foco en rendimiento, accesibilidad y experiencia de usuario. Trabaja con Astro, Vue, AdonisJS, TypeScript y Node.js.',
+      },
+      {
+        q: '¿Qué tecnologías usa Edgar Briceño?',
+        a: 'Su stack principal incluye Astro, Vue 3, Pinia, React, TypeScript, JavaScript, AdonisJS, Node.js, Tailwind CSS, PostgreSQL, MySQL y Docker.',
+      },
+      {
+        q: '¿Cómo contactar a Edgar Briceño?',
+        a: 'Puedes escribirle por correo a edgardev26@gmail.com o ver su código en github.com/EDGAR-BRI.',
+      },
+      {
+        q: '¿Qué tipo de proyectos desarrolla Edgar Briceño?',
+        a: 'Desarrolla aplicaciones web full-stack, dashboards, herramientas CLI y frontends con React, además de participar en proyectos open source.',
+      },
+    ],
     boot: {
       title: 'edgar@briceño: ~/portfolio',
       connect: '$ ssh edgar@briceño.portfolio',
@@ -110,6 +129,25 @@ export const translations = {
     repo_link: 'View repo',
     demo_link: 'View demo',
     featured: 'Featured',
+    faq_title: 'FAQ',
+    faq: [
+      {
+        q: 'Who is Edgar Briceño?',
+        a: 'Edgar Briceño is a full-stack developer building web applications focused on performance, accessibility and user experience. He works with Astro, Vue, AdonisJS, TypeScript and Node.js.',
+      },
+      {
+        q: 'What technologies does Edgar Briceño use?',
+        a: 'His main stack includes Astro, Vue 3, Pinia, React, TypeScript, JavaScript, AdonisJS, Node.js, Tailwind CSS, PostgreSQL, MySQL and Docker.',
+      },
+      {
+        q: 'How can I contact Edgar Briceño?',
+        a: 'You can email him at edgardev26@gmail.com or check his code on github.com/EDGAR-BRI.',
+      },
+      {
+        q: 'What kind of projects does Edgar Briceño build?',
+        a: 'He builds full-stack web applications, dashboards, CLI tools and React frontends, and contributes to open source projects.',
+      },
+    ],
     boot: {
       title: 'edgar@briceño: ~/portfolio',
       connect: '$ ssh edgar@briceño.portfolio',

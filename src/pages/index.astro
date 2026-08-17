@@ -5,6 +5,7 @@ import ProjectsGrid from '../components/ProjectsGrid.vue';
 import LiveSection from '../components/LiveSection.vue';
 import SkillsSection from '../components/SkillsSection.vue';
 import ContactSection from '../components/ContactSection.vue';
+import FaqSection from '../components/FaqSection.vue';
 import GithubSection from '../components/GithubSection.vue';
 import SiteFooter from '../components/SiteFooter.vue';
 import ScrollAnimations from '../components/ScrollAnimations.vue';
@@ -23,6 +24,7 @@ const projects = entries.map((e) => e.data);
   <LiveSection client:visible />
   <GithubSection client:visible />
   <SkillsSection client:load />
+  <FaqSection client:load />
   <ContactSection client:load />
   <SiteFooter client:load />
 </Base>
