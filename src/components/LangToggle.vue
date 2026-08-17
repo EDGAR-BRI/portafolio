@@ -3,10 +3,6 @@ import { useLang, toggleLang, type Lang } from '../stores/lang';
 
 const lang = useLang();
 
-function handleToggle() {
-  toggleLang();
-}
-
 function pick(value: Lang) {
   if (lang.value !== value) toggleLang();
 }
@@ -23,6 +19,7 @@ function pick(value: Lang) {
     >
       ES
     </button>
+    <span class="sep">/</span>
     <button
       type="button"
       class="lang-btn"
@@ -39,26 +36,24 @@ function pick(value: Lang) {
 .lang-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  padding: 4px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(13, 17, 23, 0.6);
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--line);
+  background: rgba(11, 15, 20, 0.6);
   backdrop-filter: blur(8px);
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 0.75rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
 }
 
 .lang-btn {
-  padding: 0.35rem 0.75rem;
+  padding: 0.2rem 0.4rem;
   border: none;
-  border-radius: 999px;
   background: transparent;
   color: var(--muted);
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: color 0.15s ease;
 }
 
 .lang-btn:hover {
@@ -66,8 +61,11 @@ function pick(value: Lang) {
 }
 
 .lang-btn.active {
-  background: var(--accent);
-  color: var(--bg);
-  box-shadow: 0 0 12px rgba(74, 222, 128, 0.4);
+  color: var(--accent);
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+}
+
+.sep {
+  color: var(--line);
 }
 </style>

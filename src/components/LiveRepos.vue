@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+import { Icon } from '@iconify/vue';
 import { useLang } from '../stores/lang';
 import { featured_slugs, translations } from '../data/site';
 
@@ -47,12 +48,13 @@ function langColor(name: string | null): string {
     C: '#555',
     'C++': '#f34b7d',
     'C#': '#178600',
-    Python: '#3572A5',
   };
   return name && map[name] ? map[name] : '#8b949e';
 }
 
-onMounted(async () => {
+async function load() {
+  loading.value = true;
+  error.value = null;
   try {
     const res = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -66,45 +68,61 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
-});
+}
+
+onMounted(load);
 </script>
 
 <template>
-  <section class="live-repos">
+  <section class="live-repos" id="live">
+    <div class="live-header">
+      <div class="live-status">
+        <span class="status-dot" :class="{ ok: !loading && !error, err: error }"></span>
+        <span class="status-text">
+          {{ error ? 'OFFLINE' : (loading ? 'CONNECTING' : 'CONNECTED') }}
+        </span>
+      </div>
+      <button type="button" class="refresh-btn" :disabled="loading" @click="load" :aria-label="t.sections.live_retry">
+        <Icon icon="lucide:refresh" width="14" height="14" :class="{ spinning: loading }" />
+      </button>
+    </div>
+
     <div v-if="loading" class="state">
-      <span class="spinner" aria-hidden="true"></span>
+      <Icon icon="lucide:loader" width="16" height="16" class="spinner" />
       <span>{{ t.sections.live_loading }}</span>
     </div>
 
     <div v-else-if="error" class="state error">
-      <span>⚠ {{ t.sections.live_error }}</span>
+      <Icon icon="lucide:alert-circle" width="16" height="16" />
+      <span>{{ t.sections.live_error }}</span>
     </div>
 
     <ul v-else class="repo-grid">
-      <li v-for="repo in repos" :key="repo.id" class="repo-card">
+      <li v-for="repo in repos" :key="repo.id" class="repo-card corner">
         <a :href="repo.html_url" target="_blank" rel="noopener noreferrer" class="repo-link">
           <header class="repo-head">
-            <svg class="repo-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-              <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/>
-            </svg>
+            <Icon icon="lucide:git-branch" width="14" height="14" class="repo-icon" />
             <span class="repo-name">{{ repo.name }}</span>
-            <span class="repo-badge" v-if="featured_slugs.indexOf(repo.name) < 5">★</span>
+            <span class="repo-badge" v-if="featured_slugs.indexOf(repo.name) < 5">
+              <Icon icon="lucide:star" width="12" height="12" />
+            </span>
           </header>
 
-          <p v-if="repo.description" class="repo-desc">
-            {{ lang.value === 'en'
-              ? (repo.description.length > 90 ? repo.description.slice(0, 90) + '…' : repo.description)
-              : (repo.description.length > 90 ? repo.description.slice(0, 90) + '…' : repo.description)
-            }}
-          </p>
+          <p v-if="repo.description" class="repo-desc">{{ repo.description }}</p>
 
           <footer class="repo-foot">
             <span class="meta" v-if="repo.language">
               <span class="dot" :style="{ background: langColor(repo.language) }"></span>
               {{ repo.language }}
             </span>
-            <span class="meta stars">⭐ {{ repo.stargazers_count }} {{ t.sections.live_stars }}</span>
-            <span class="meta updated">{{ t.sections.live_updated }} {{ formatDate(repo.pushed_at, lang.value) }}</span>
+            <span class="meta">
+              <Icon icon="lucide:star" width="12" height="12" />
+              {{ repo.stargazers_count }}
+            </span>
+            <span class="meta">
+              <Icon icon="lucide:clock" width="12" height="12" />
+              {{ formatDate(repo.pushed_at, lang.value) }}
+            </span>
           </footer>
         </a>
       </li>
@@ -117,27 +135,69 @@ onMounted(async () => {
   width: 100%;
 }
 
+.live-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+}
+
+.live-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--muted);
+}
+
+.status-dot.ok { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+.status-dot.err { background: #f85149; box-shadow: 0 0 6px #f85149; }
+
+.refresh-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+  display: inline-flex;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.spinning { animation: spin 0.8s linear infinite; }
+
 .state {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   color: var(--muted);
-  padding: 2rem;
+  padding: 1.5rem;
   justify-content: center;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.85rem;
+  border: 1px dashed var(--line);
 }
 
-.state.error {
-  color: #f85149;
-}
+.state.error { color: #f85149; }
 
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
+.spinner { animation: spin 0.8s linear infinite; }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
@@ -149,21 +209,21 @@ onMounted(async () => {
   margin: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
+  gap: 0;
+  border: 1px solid var(--line);
 }
 
 .repo-card {
-  background: rgba(22, 27, 34, 0.6);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  backdrop-filter: blur(6px);
+  background: var(--bg-soft);
+  transition: background 0.15s ease;
+  border: 1px solid var(--line);
+  margin: -1px 0 0 -1px;
+  position: relative;
 }
 
 .repo-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--accent);
-  box-shadow: 0 4px 20px rgba(74, 222, 128, 0.1);
+  background: rgba(74, 222, 128, 0.04);
+  z-index: 1;
 }
 
 .repo-link {
@@ -181,42 +241,47 @@ onMounted(async () => {
 }
 
 .repo-icon {
-  width: 16px;
-  height: 16px;
-  color: var(--muted);
+  color: var(--accent);
   flex-shrink: 0;
 }
 
 .repo-name {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--fg);
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .repo-badge {
   color: var(--accent);
-  font-size: 0.9rem;
+  display: inline-flex;
 }
 
 .repo-desc {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--muted);
   margin: 0 0 0.75rem 0;
-  line-height: 1.4;
+  line-height: 1.45;
   min-height: 2.4em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .repo-foot {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  font-size: 0.75rem;
+  gap: 0.85rem;
+  font-size: 0.72rem;
   color: var(--muted);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  border-top: 1px dashed var(--line);
+  padding-top: 0.6rem;
 }
 
 .meta {
@@ -227,8 +292,7 @@ onMounted(async () => {
 
 .dot {
   display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  width: 8px;
+  height: 8px;
 }
 </style>

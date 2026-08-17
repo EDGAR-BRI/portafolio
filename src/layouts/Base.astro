@@ -22,14 +22,16 @@ const { title = 'Edgar Bri · Portfolio', description = 'Full-stack developer bu
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
     />
     <title>{title}</title>
   </head>
   <body>
     <header class="site-header">
       <a href="#top" class="brand" aria-label="Home">
-        <span class="prompt">~/</span><span class="brand-name">edgar</span>
+        <span class="prompt">[</span><span class="brand-name">edgar</span><span class="prompt">]</span>
+        <span class="brand-sep">//</span>
+        <span class="brand-path">portfolio</span>
       </a>
       <LangToggle client:load />
     </header>
@@ -60,26 +62,26 @@ const { title = 'Edgar Bri · Portfolio', description = 'Full-stack developer bu
         align-items: center;
         justify-content: space-between;
         padding: 1rem 2rem;
-        background: rgba(7, 9, 13, 0.7);
-        backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--border);
+        background: rgba(6, 8, 11, 0.85);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
       }
 
       .brand {
         font-family: 'JetBrains Mono', ui-monospace, monospace;
         text-decoration: none;
         color: var(--fg);
-        font-weight: 700;
+        font-weight: 600;
         font-size: 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        letter-spacing: 0.02em;
       }
 
-      .prompt {
-        color: var(--accent);
-      }
-
-      .brand-name {
-        margin-left: 2px;
-      }
+      .prompt { color: var(--accent); }
+      .brand-sep { color: var(--muted); margin: 0 0.2rem; }
+      .brand-path { color: var(--muted); }
 
       main {
         max-width: 1200px;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { Icon } from '@iconify/vue';
 import { useLang } from '../stores/lang';
 import { translations } from '../data/site';
 
@@ -10,34 +11,61 @@ const year = new Date().getFullYear();
 
 <template>
   <footer class="site-footer">
-    <p>
-      © {{ year }} Edgar Bri · {{ t.footer }}
-      <span class="tech">Astro</span> {{ t.and }}
-      <span class="tech">Vue</span>
+    <div class="footer-row">
       <span class="cursor">█</span>
-    </p>
+      <span>{{ t.footer }}</span>
+      <span class="tech">
+        <Icon icon="logos:astro-icon" width="14" height="14" />
+        Astro
+      </span>
+      <span>{{ t.and }}</span>
+      <span class="tech">
+        <Icon icon="logos:vue" width="14" height="14" />
+        Vue
+      </span>
+    </div>
+    <div class="footer-copy">© {{ year }} Edgar Bri · github.com/EDGAR-BRI</div>
   </footer>
 </template>
 
 <style scoped>
 .site-footer {
-  text-align: center;
-  padding: 2rem 0 1rem;
+  margin-top: 3rem;
+  padding: 1.5rem 0 1rem;
   color: var(--muted);
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.85rem;
-  border-top: 1px solid var(--border);
-  margin-top: 3rem;
+  font-size: 0.8rem;
+  border-top: 1px solid var(--line);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footer-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .tech {
   color: var(--accent);
-  margin: 0 0.3rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .cursor {
   color: var(--accent);
   animation: blink 1s steps(1) infinite;
+}
+
+.footer-copy {
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
 }
 
 @keyframes blink {

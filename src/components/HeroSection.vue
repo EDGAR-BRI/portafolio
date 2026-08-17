@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { Icon } from '@iconify/vue';
 import { useLang } from '../stores/lang';
 import { translations, social } from '../data/site';
 import Typewriter from './Typewriter.vue';
@@ -11,8 +12,15 @@ const roles = computed(() => t.value.hero.roles);
 
 <template>
   <section class="hero" id="top">
+    <div class="hero-tag">
+      <Icon icon="lucide:terminal" width="14" height="14" />
+      <span>~/portfolio</span>
+      <span class="tag-dot"></span>
+      <span class="muted">online</span>
+    </div>
+
     <p class="greeting">
-      <span class="prompt">{{ lang.value === 'en' ? '>' : '>' }}</span>
+      <Icon icon="lucide:chevron-right" width="16" height="16" class="prompt" />
       {{ t.hero.greeting }}
     </p>
     <h1 class="name">{{ t.hero.name }}</h1>
@@ -21,16 +29,25 @@ const roles = computed(() => t.value.hero.roles);
     </h2>
     <p class="bio">{{ t.hero.bio }}</p>
     <div class="cta">
-      <a href="#projects" class="btn primary">{{ t.hero.cta_projects }} ↓</a>
-      <a :href="`mailto:${social.email}`" class="btn ghost">{{ t.hero.cta_contact }} →</a>
+      <a href="#projects" class="btn primary">
+        {{ t.hero.cta_projects }}
+        <Icon icon="lucide:arrow-down" width="16" height="16" />
+      </a>
+      <a :href="`mailto:${social.email}`" class="btn ghost">
+        {{ t.hero.cta_contact }}
+        <Icon icon="lucide:arrow-right" width="16" height="16" />
+      </a>
     </div>
 
-    <div class="terminal" aria-hidden="true">
+    <div class="terminal corner" aria-hidden="true">
       <div class="term-bar">
         <span class="dot red"></span>
         <span class="dot yellow"></span>
         <span class="dot green"></span>
-        <span class="term-title">~ edgar@bri: ~/portfolio</span>
+        <span class="term-title">
+          <Icon icon="lucide:terminal" width="12" height="12" />
+          edgar@bri: ~/portfolio
+        </span>
       </div>
       <div class="term-body">
         <div class="line"><span class="prompt">$</span> whoami</div>
@@ -47,17 +64,49 @@ const roles = computed(() => t.value.hero.roles);
 
 <style scoped>
 .hero {
-  padding: 4rem 0 3rem;
+  padding: 3.5rem 0 3rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: var(--fg);
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  padding: 0.35rem 0.7rem;
+  width: fit-content;
+  letter-spacing: 0.05em;
+}
+
+.tag-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 0;
+  box-shadow: 0 0 6px var(--accent);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.muted { color: var(--muted); }
+
+@keyframes pulse {
+  50% { opacity: 0.3; }
 }
 
 .greeting {
-  margin: 0;
+  margin: 0.75rem 0 0 0;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   color: var(--muted);
-  font-size: 1rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .prompt {
@@ -69,6 +118,7 @@ const roles = computed(() => t.value.hero.roles);
   font-weight: 700;
   margin: 0;
   letter-spacing: -0.02em;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
   background: linear-gradient(135deg, var(--fg) 0%, var(--accent) 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -76,15 +126,16 @@ const roles = computed(() => t.value.hero.roles);
 }
 
 .role {
-  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-  margin: 0;
+  font-size: clamp(1.05rem, 2.3vw, 1.4rem);
+  margin: 0.25rem 0 0 0;
   font-weight: 500;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   min-height: 1.5em;
+  color: var(--accent);
 }
 
 .bio {
-  font-size: 1.05rem;
+  font-size: 1rem;
   color: var(--muted);
   max-width: 640px;
   line-height: 1.6;
@@ -101,13 +152,15 @@ const roles = computed(() => t.value.hero.roles);
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.7rem 1.25rem;
-  border-radius: 8px;
+  gap: 0.5rem;
+  padding: 0.7rem 1.15rem;
   font-weight: 600;
   text-decoration: none;
-  font-size: 0.95rem;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  font-size: 0.9rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: 0.02em;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  border: 1px solid transparent;
 }
 
 .btn.primary {
@@ -116,29 +169,30 @@ const roles = computed(() => t.value.hero.roles);
 }
 
 .btn.primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(74, 222, 128, 0.3);
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .btn.ghost {
   background: transparent;
   color: var(--fg);
-  border: 1px solid var(--border);
+  border-color: var(--line);
 }
 
 .btn.ghost:hover {
   border-color: var(--accent);
+  color: var(--accent);
 }
 
 .terminal {
-  background: rgba(13, 17, 23, 0.9);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
   overflow: hidden;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   max-width: 640px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  margin-top: 1rem;
 }
 
 .term-bar {
@@ -146,14 +200,14 @@ const roles = computed(() => t.value.hero.roles);
   align-items: center;
   gap: 0.4rem;
   padding: 0.6rem 1rem;
-  background: rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid var(--line);
 }
 
 .dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 0;
 }
 
 .dot.red { background: #ff5f56; }
@@ -164,6 +218,9 @@ const roles = computed(() => t.value.hero.roles);
   margin-left: 0.5rem;
   color: var(--muted);
   font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .term-body {

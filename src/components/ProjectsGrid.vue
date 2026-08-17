@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { Icon } from '@iconify/vue';
 import { useLang } from '../stores/lang';
 import { translations } from '../data/site';
 
@@ -37,7 +38,8 @@ const visible = computed(() => {
 </script>
 
 <template>
-  <section class="projects-section">
+  <section class="projects-section" id="projects">
+    <div class="section-label">[ projects ]</div>
     <h2 class="section-title">
       <span class="hash">#</span> {{ t.sections.projects_title }}
     </h2>
@@ -47,11 +49,20 @@ const visible = computed(() => {
       <article
         v-for="(p, idx) in visible"
         :key="p.slug"
-        class="project-card"
+        class="project-card corner"
         :class="{ featured: p.featured }"
-        :style="{ animationDelay: `${idx * 0.05}s` }"
+        :style="{ animationDelay: `${idx * 0.04}s` }"
       >
-        <span v-if="p.featured" class="badge">{{ t.featured }}</span>
+        <div class="card-top">
+          <div class="card-meta">
+            <span class="meta-num">{{ String(idx + 1).padStart(2, '0') }}</span>
+            <span v-if="p.year" class="meta-year">{{ p.year }}</span>
+          </div>
+          <span v-if="p.featured" class="badge">
+            <Icon icon="lucide:star" width="10" height="10" />
+            {{ t.featured }}
+          </span>
+        </div>
 
         <header>
           <h3 class="title">{{ p.title }}</h3>
@@ -66,15 +77,14 @@ const visible = computed(() => {
 
         <footer class="actions">
           <a :href="p.repo" target="_blank" rel="noopener noreferrer" class="btn">
-            <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14" aria-hidden="true">
-              <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/>
-            </svg>
+            <Icon icon="lucide:github" width="14" height="14" />
             {{ t.repo_link }}
+            <Icon icon="lucide:external-link" width="12" height="12" />
           </a>
           <a v-if="p.demo" :href="p.demo" target="_blank" rel="noopener noreferrer" class="btn ghost">
-            {{ t.demo_link }} ↗
+            {{ t.demo_link }}
+            <Icon icon="lucide:external-link" width="12" height="12" />
           </a>
-          <span v-if="p.year" class="year">{{ p.year }}</span>
         </footer>
       </article>
     </div>
@@ -86,87 +96,92 @@ const visible = computed(() => {
   margin: 4rem 0;
 }
 
-.section-title {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem 0;
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
-.hash {
-  color: var(--accent);
-}
-
-.section-sub {
-  color: var(--muted);
-  margin: 0 0 2rem 0;
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.25rem;
+  gap: 0;
+  border: 1px solid var(--line);
 }
 
 .project-card {
   position: relative;
-  background: rgba(22, 27, 34, 0.6);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1.5rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  margin: -1px 0 0 -1px;
+  padding: 1.4rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  backdrop-filter: blur(6px);
-  animation: fadeUp 0.5s ease-out backwards;
+  gap: 0.85rem;
+  transition: background 0.15s ease;
+  animation: fadeUp 0.4s ease-out backwards;
+  min-height: 260px;
 }
 
 .project-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--accent);
-  box-shadow: 0 6px 24px rgba(74, 222, 128, 0.12);
+  background: rgba(74, 222, 128, 0.04);
+  z-index: 1;
 }
 
 .project-card.featured {
-  border-color: rgba(74, 222, 128, 0.3);
+  background: rgba(74, 222, 128, 0.025);
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.meta-num {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.meta-year {
+  color: var(--muted);
 }
 
 .badge {
-  position: absolute;
-  top: -10px;
-  right: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   background: var(--accent);
   color: var(--bg);
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  letter-spacing: 0.05em;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  padding: 0.15rem 0.5rem;
+  letter-spacing: 0.1em;
 }
 
 .title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--fg);
   font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 
 .subtitle {
-  margin: 0.25rem 0 0 0;
-  font-size: 0.85rem;
+  margin: 0.2rem 0 0 0;
+  font-size: 0.8rem;
   color: var(--accent);
   opacity: 0.85;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 
 .description {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--muted);
   line-height: 1.55;
   flex: 1;
@@ -178,66 +193,63 @@ const visible = computed(() => {
   margin: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
 .chip {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 0.7rem;
-  padding: 0.25rem 0.6rem;
-  background: rgba(74, 222, 128, 0.1);
-  color: var(--accent);
-  border: 1px solid rgba(74, 222, 128, 0.25);
-  border-radius: 6px;
+  padding: 0.2rem 0.55rem;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  letter-spacing: 0.02em;
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
   flex-wrap: wrap;
+  border-top: 1px dashed var(--line);
+  padding-top: 0.85rem;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.5rem 0.9rem;
+  padding: 0.45rem 0.75rem;
   background: var(--accent);
   color: var(--bg);
-  border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.85rem;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  font-size: 0.78rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: 0.03em;
+  border: 1px solid var(--accent);
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
+  background: transparent;
+  color: var(--accent);
 }
 
 .btn.ghost {
   background: transparent;
   color: var(--fg);
-  border: 1px solid var(--border);
+  border-color: var(--line);
 }
 
 .btn.ghost:hover {
   border-color: var(--accent);
-  box-shadow: none;
-}
-
-.year {
-  margin-left: auto;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.8rem;
-  color: var(--muted);
+  color: var(--accent);
 }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
+import { Icon } from '@iconify/vue';
 
 interface Props {
   words: string[];
@@ -58,24 +59,28 @@ onUnmounted(() => {
 
 <template>
   <span class="typewriter" aria-live="polite">
-    <span>{{ display }}</span>
-    <span class="caret" aria-hidden="true">▋</span>
+    <span class="text">{{ display }}</span>
+    <span class="caret" aria-hidden="true">
+      <Icon icon="lucide:chevron-right" width="14" height="14" />
+    </span>
   </span>
 </template>
 
 <style scoped>
 .typewriter {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
+  gap: 0.1rem;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   color: var(--accent);
   min-height: 1.2em;
 }
 
 .caret {
-  margin-left: 2px;
+  display: inline-flex;
   color: var(--accent);
   animation: blink 1s steps(1) infinite;
+  margin-left: 2px;
 }
 
 @keyframes blink {

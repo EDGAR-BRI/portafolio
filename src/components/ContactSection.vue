@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { Icon } from '@iconify/vue';
 import { useLang } from '../stores/lang';
 import { translations, social } from '../data/site';
 
@@ -9,17 +10,23 @@ const t = computed(() => translations[lang.value]);
 
 <template>
   <section class="contact" id="contact">
-    <h2 class="section-title">
-      <span class="hash">#</span> {{ t.sections.contact_title }}
-    </h2>
-    <p class="section-sub">{{ t.sections.contact_subtitle }}</p>
-    <div class="actions">
-      <a :href="`mailto:${social.email}`" class="btn primary">
-        ✉ {{ t.sections.contact_btn }}
-      </a>
-      <a :href="social.github" target="_blank" rel="noopener noreferrer" class="btn ghost">
-        GitHub ↗
-      </a>
+    <div class="contact-inner corner">
+      <div class="section-label">[ contact ]</div>
+      <h2 class="section-title">
+        <span class="hash">#</span> {{ t.sections.contact_title }}
+      </h2>
+      <p class="section-sub">{{ t.sections.contact_subtitle }}</p>
+      <div class="actions">
+        <a :href="`mailto:${social.email}`" class="btn primary">
+          <Icon icon="lucide:mail" width="14" height="14" />
+          {{ t.sections.contact_btn }}
+        </a>
+        <a :href="social.github" target="_blank" rel="noopener noreferrer" class="btn ghost">
+          <Icon icon="lucide:github" width="14" height="14" />
+          github.com/EDGAR-BRI
+          <Icon icon="lucide:external-link" width="12" height="12" />
+        </a>
+      </div>
     </div>
   </section>
 </template>
@@ -27,51 +34,37 @@ const t = computed(() => translations[lang.value]);
 <style scoped>
 .contact {
   margin: 5rem 0 2rem;
+}
+
+.contact-inner {
   padding: 2.5rem;
-  background: rgba(22, 27, 34, 0.5);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  text-align: center;
-  backdrop-filter: blur(6px);
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
 }
 
 .section-title {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem 0;
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  justify-content: center;
-}
-
-.hash {
-  color: var(--accent);
-}
-
-.section-sub {
-  color: var(--muted);
-  margin: 0 0 1.5rem 0;
+  justify-content: flex-start;
 }
 
 .actions {
   display: flex;
   gap: 0.75rem;
-  justify-content: center;
   flex-wrap: wrap;
+  margin-top: 1.5rem;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.7rem 1.25rem;
-  border-radius: 8px;
+  gap: 0.5rem;
+  padding: 0.7rem 1.15rem;
   font-weight: 600;
   text-decoration: none;
-  font-size: 0.95rem;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  font-size: 0.9rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: 0.03em;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .btn.primary {
@@ -80,17 +73,19 @@ const t = computed(() => translations[lang.value]);
 }
 
 .btn.primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(74, 222, 128, 0.3);
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .btn.ghost {
   background: transparent;
   color: var(--fg);
-  border: 1px solid var(--border);
+  border-color: var(--line);
 }
 
 .btn.ghost:hover {
   border-color: var(--accent);
+  color: var(--accent);
 }
 </style>
