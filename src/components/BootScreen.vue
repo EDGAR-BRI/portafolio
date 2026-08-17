@@ -10,13 +10,17 @@ const SESSION_KEY = 'portfolio.booted';
 
 const shown = ref(true);
 const revealed = ref(0);
-const typedChars = ref(0);
+const typedChars = ref<Map<number, number>>(new Map());
 const finished = ref(false);
 const entering = ref(false);
 const closing = ref(false);
 
+type Phase = 'typing' | 'waiting-pwd' | 'finished';
+const phase = ref<Phase>('typing');
+
 let timers: ReturnType<typeof setTimeout>[] = [];
 let keyHandler: ((e: KeyboardEvent) => void) | null = null;
+let autoEnterTimer: ReturnType<typeof setTimeout> | null = null;
 
 const reducedMotion = typeof window !== 'undefined'
   && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -25,16 +29,18 @@ const lastLogin = ref('');
 
 interface Line {
   text: string;
-  type: 'cmd' | 'out' | 'ok' | 'info' | 'prompt' | 'enter';
+  type: 'cmd' | 'out' | 'ok' | 'info' | 'prompt' | 'pwd-prompt' | 'pwd' | 'auth-running';
   typed?: boolean;
+  speed?: number;
 }
 
 const lines = computed<Line[]>(() => {
   const b = t.value;
   return [
-    { text: b.loading, type: 'loading' },
-    { text: b.connect, type: 'cmd', typed: true },
-    { text: b.connecting, type: 'out' },
+    { text: b.connect, type: 'cmd', typed: true, speed: 30 },
+    { text: b.password_prompt, type: 'pwd-prompt', typed: true, speed: 22 },
+    { text: b.password, type: 'pwd', typed: true, speed: 35 },
+    { text: b.authenticating, type: 'auth-running' },
     { text: b.ok, type: 'ok' },
     { text: b.auth, type: 'ok' },
     { text: b.welcome, type: 'info' },
@@ -58,8 +64,8 @@ const visibleLines = computed(() => {
 
 function lineText(line: Line, index: number): string {
   if (line.typed && !entering.value) {
-    const cmdIndex = lines.value.findIndex((l) => l.typed);
-    if (index === cmdIndex) return line.text.slice(0, typedChars.value);
+    const chars = typedChars.value.get(index) ?? 0;
+    return line.text.slice(0, chars);
   }
   return line.text;
 }
@@ -74,10 +80,38 @@ function clearTimers() {
   timers = [];
 }
 
+function clearAutoEnter() {
+  if (autoEnterTimer) {
+    clearTimeout(autoEnterTimer);
+    autoEnterTimer = null;
+  }
+}
+
+function startAutoEnter(ms = 5000) {
+  clearAutoEnter();
+  autoEnterTimer = setTimeout(() => {
+    if (shown.value && !entering.value && !closing.value) {
+      onEnter();
+    }
+  }, ms);
+}
+
+function setTyped(idx: number, chars: number) {
+  const m = new Map(typedChars.value);
+  m.set(idx, chars);
+  typedChars.value = m;
+}
+
 function revealAll() {
   revealed.value = lines.value.length;
-  typedChars.value = lines.value[0]?.text.length ?? 0;
+  const m = new Map<number, number>();
+  lines.value.forEach((l, i) => {
+    if (l.typed) m.set(i, l.text.length);
+  });
+  typedChars.value = m;
   finished.value = true;
+  phase.value = 'finished';
+  startAutoEnter();
 }
 
 function startSequence() {
@@ -86,43 +120,69 @@ function startSequence() {
     return;
   }
 
-  const cmdIdx = lines.value.findIndex((l) => l.typed);
-  const cmd = cmdIdx >= 0 ? lines.value[cmdIdx] : null;
-  if (!cmd) return;
+  let cursorMs = 0;
+  const initialTyped = lines.value
+    .map((l, i) => ({ line: l, idx: i }))
+    .filter((x) => x.line.typed && x.line.type !== 'pwd');
 
-  revealed.value = 1;
-
-  const total = cmd.text.length;
-  const speed = 30;
-  const typingDelay = 350;
-
-  for (let i = 1; i <= total; i++) {
-    schedule(() => {
-      typedChars.value = i;
-      if (i === total) {
-        schedule(() => {
-          revealed.value = cmdIdx + 2;
-        }, 100);
-      }
-    }, typingDelay + i * speed);
+  for (const { line, idx } of initialTyped) {
+    const total = line.text.length;
+    const speed = line.speed ?? 30;
+    for (let i = 1; i <= total; i++) {
+      schedule(() => {
+        setTyped(idx, i);
+      }, cursorMs + i * speed);
+    }
+    cursorMs += total * speed + 60;
   }
 
-  const cmdEnd = typingDelay + total * speed;
-  const rest = lines.value.slice(cmdIdx + 1);
-  const stepGap = 280;
-  rest.forEach((_, idx) => {
+  const pwdPromptIdx = initialTyped.length > 1 ? initialTyped[1].idx : 1;
+  schedule(() => {
+    revealed.value = pwdPromptIdx + 1;
+    phase.value = 'waiting-pwd';
+    startAutoEnter(2000);
+  }, cursorMs + 100);
+}
+
+function typePasswordAndContinue() {
+  if (phase.value !== 'waiting-pwd') return;
+  clearTimers();
+  clearAutoEnter();
+  phase.value = 'typing';
+
+  const pwdIdx = lines.value.findIndex((l) => l.type === 'pwd');
+  const pwdLine = lines.value[pwdIdx];
+  if (!pwdLine) return;
+
+  revealed.value = pwdIdx + 1;
+  const total = pwdLine.text.length;
+  const speed = pwdLine.speed ?? 35;
+
+  let cursor = 0;
+  for (let i = 1; i <= total; i++) {
     schedule(() => {
-      revealed.value = cmdIdx + 2 + idx + 1;
+      setTyped(pwdIdx, i);
+    }, cursor + i * speed);
+  }
+  cursor += total * speed + 60;
+
+  const rest = lines.value.slice(pwdIdx + 1);
+  rest.forEach((line, idx) => {
+    schedule(() => {
+      revealed.value = pwdIdx + 2 + idx;
       if (idx === rest.length - 1) {
         schedule(() => {
           finished.value = true;
-        }, 250);
+          phase.value = 'finished';
+          startAutoEnter(5000);
+        }, 220);
       }
-    }, cmdEnd + 200 + idx * stepGap);
+    }, cursor + 80 + idx * 260);
   });
 }
 
 function typeEnterLines() {
+  clearAutoEnter();
   const all = enterLines.value;
   all.forEach((_, idx) => {
     schedule(() => {
@@ -133,98 +193,34 @@ function typeEnterLines() {
   const totalMs = (all.length - 1) * 220 + 220;
   schedule(() => {
     try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch {}
-    startMatrix();
+    document.documentElement.classList.add('boot-dropping');
+    closing.value = true;
     setTimeout(() => {
-      closing.value = true;
-      document.documentElement.classList.add('boot-dropping');
-      setTimeout(() => {
-        document.documentElement.classList.remove('boot-pending', 'boot-dropping');
-        shown.value = false;
-        document.body.style.overflow = '';
-        try { window.sessionStorage.setItem(SESSION_KEY, '1'); } catch {}
-        window.dispatchEvent(new CustomEvent('portfolio:boot-done'));
-        stopMatrix();
-      }, 500);
-    }, 850);
+      document.documentElement.classList.remove('boot-pending', 'boot-dropping');
+      shown.value = false;
+      document.body.style.overflow = '';
+      try { window.sessionStorage.setItem(SESSION_KEY, '1'); } catch {}
+      window.dispatchEvent(new CustomEvent('portfolio:boot-done'));
+    }, 550);
   }, totalMs);
-}
-
-const matrixCanvas = ref<HTMLCanvasElement | null>(null);
-let matrixRaf: number | null = null;
-let matrixRunning = false;
-
-function startMatrix() {
-  const canvas = matrixCanvas.value;
-  if (!canvas) return;
-  matrixRunning = true;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-
-  const dpr = Math.max(1, window.devicePixelRatio || 1);
-  const resize = () => {
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
-    canvas.style.width = window.innerWidth + 'px';
-    canvas.style.height = window.innerHeight + 'px';
-  };
-  resize();
-
-  const charset = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF<>{}[]$#@!*';
-  const fontSize = 16;
-  const cols = Math.floor(canvas.width / (fontSize * dpr));
-  const drops: number[] = new Array(cols).fill(0).map(() => Math.random() * canvas.height / dpr / fontSize);
-
-  const draw = () => {
-    if (!matrixRunning) return;
-    ctx.fillStyle = 'rgba(6, 8, 11, 0.08)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.font = `${fontSize * dpr}px 'JetBrains Mono', ui-monospace, monospace`;
-    for (let i = 0; i < drops.length; i++) {
-      const text = charset[Math.floor(Math.random() * charset.length)];
-      const x = i * fontSize * dpr;
-      const y = drops[i] * fontSize * dpr;
-
-      ctx.fillStyle = 'rgba(74, 222, 128, 0.55)';
-      ctx.fillText(text, x, y);
-
-      ctx.fillStyle = 'rgba(74, 222, 128, 0.9)';
-      ctx.fillText(text, x, y - fontSize * dpr);
-
-      if (y > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
-      drops[i] += 0.95;
-    }
-    matrixRaf = requestAnimationFrame(draw);
-  };
-  draw();
-}
-
-function stopMatrix() {
-  matrixRunning = false;
-  if (matrixRaf !== null) cancelAnimationFrame(matrixRaf);
-  matrixRaf = null;
 }
 
 function onEnter() {
   if (!shown.value) return;
-  if (!finished.value) {
+  if (phase.value === 'typing') {
     clearTimers();
     revealAll();
     return;
   }
-  if (entering.value || closing.value) return;
-  entering.value = true;
-  typeEnterLines();
-}
-
-function dismiss() {
-  shown.value = false;
-  closing.value = false;
-  entering.value = false;
-  document.body.style.overflow = '';
-  window.dispatchEvent(new CustomEvent('portfolio:boot-done'));
+  if (phase.value === 'waiting-pwd') {
+    typePasswordAndContinue();
+    return;
+  }
+  if (phase.value === 'finished') {
+    if (entering.value || closing.value) return;
+    entering.value = true;
+    typeEnterLines();
+  }
 }
 
 onMounted(() => {
@@ -266,6 +262,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   clearTimers();
+  clearAutoEnter();
   if (keyHandler) window.removeEventListener('keydown', keyHandler);
 });
 </script>
@@ -280,7 +277,6 @@ onUnmounted(() => {
     :aria-label="lang === 'es' ? 'Conexión al portafolio' : 'Connecting to portfolio'"
   >
     <div class="boot-bg"></div>
-    <canvas v-show="entering" ref="matrixCanvas" class="matrix-canvas" aria-hidden="true"></canvas>
     <div class="terminal-wrap">
       <div class="terminal corner" :aria-hidden="true">
         <div class="terminal-bar">
@@ -301,12 +297,16 @@ onUnmounted(() => {
             :class="['line-' + line.type]"
           >
             <span class="text">{{ lineText(line, idx) }}</span>
-            <span v-if="line.type === 'loading'" class="dots">
-              <span>.</span><span>.</span><span>.</span>
-            </span>
           </div>
 
-          <div v-if="finished && !entering" class="enter-prompt">
+          <div v-if="phase === 'waiting-pwd'" class="enter-prompt">
+            <span class="bracket">[</span>
+            <span class="enter-text">{{ t.send_password }}</span>
+            <span class="bracket">]</span>
+            <span class="caret blink">█</span>
+          </div>
+
+          <div v-else-if="phase === 'finished'" class="enter-prompt">
             <span class="bracket">[</span>
             <span class="enter-text">{{ t.enter }}</span>
             <span class="bracket">]</span>
@@ -327,7 +327,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.55s ease;
 }
 
 .boot-overlay.closing {
@@ -337,22 +337,8 @@ onUnmounted(() => {
 
 .boot-overlay.entering .terminal {
   opacity: 0;
-  transform: scale(0.94);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-.boot-overlay.entering .boot-bg {
-  opacity: 0;
-  transition: opacity 0.7s ease 0.1s;
-}
-
-.matrix-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 5;
-  pointer-events: none;
+  transform: scale(0.96);
+  transition: opacity 0.45s ease, transform 0.45s ease;
 }
 
 .boot-bg {
@@ -378,7 +364,7 @@ onUnmounted(() => {
   overflow: hidden;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 0.85rem;
-  transition: transform 0.7s cubic-bezier(0.55, 0.06, 0.68, 0.19);
+  transition: opacity 0.45s ease, transform 0.45s ease;
 }
 
 .terminal-bar {
@@ -414,29 +400,6 @@ onUnmounted(() => {
   color: var(--fg);
 }
 
-.line-loading {
-  color: var(--muted);
-}
-
-.line-loading .dots {
-  display: inline-block;
-  margin-left: 4px;
-}
-
-.line-loading .dots span {
-  opacity: 0;
-  animation: dotPulse 1.4s infinite;
-}
-
-.line-loading .dots span:nth-child(1) { animation-delay: 0s; }
-.line-loading .dots span:nth-child(2) { animation-delay: 0.2s; }
-.line-loading .dots span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes dotPulse {
-  0%, 100% { opacity: 0; }
-  20%, 60% { opacity: 1; }
-}
-
 .line-out {
   color: var(--muted);
 }
@@ -452,6 +415,19 @@ onUnmounted(() => {
 .line-prompt {
   color: var(--accent);
   margin-top: 0.5rem;
+}
+
+.line-pwd-prompt {
+  color: var(--muted);
+}
+
+.line-pwd {
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.line-auth-running {
+  color: var(--muted);
 }
 
 .caret {
