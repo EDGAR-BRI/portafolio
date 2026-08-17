@@ -120,11 +120,15 @@ function startSequence() {
     return;
   }
 
-  let cursorMs = 0;
   const initialTyped = lines.value
     .map((l, i) => ({ line: l, idx: i }))
     .filter((x) => x.line.typed && x.line.type !== 'pwd');
 
+  const firstTypedIdx = initialTyped[0]?.idx ?? 0;
+  revealed.value = firstTypedIdx + 1;
+  setTyped(firstTypedIdx, 1);
+
+  let cursorMs = 0;
   for (const { line, idx } of initialTyped) {
     const total = line.text.length;
     const speed = line.speed ?? 30;
@@ -141,7 +145,7 @@ function startSequence() {
     revealed.value = pwdPromptIdx + 1;
     phase.value = 'waiting-pwd';
     startAutoEnter(2000);
-  }, cursorMs + 100);
+  }, cursorMs + 80);
 }
 
 function typePasswordAndContinue() {
