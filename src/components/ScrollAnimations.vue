@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger);
+let triggers: Array<{ kill: () => void }> = [];
 
-let triggers: ScrollTrigger[] = [];
-
-onMounted(() => {
+onMounted(async () => {
   if (typeof window === 'undefined') return;
+
+  const gsapModule = await import('gsap');
+  const stModule = await import('gsap/ScrollTrigger');
+  const gsap = gsapModule.gsap;
+  const ScrollTrigger = stModule.ScrollTrigger ?? (stModule as any).default?.ScrollTrigger;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const collected: Array<{ kill: () => void }> = [];
 
   // Section reveals
   const sections = document.querySelectorAll('main > section, main > div > section');
@@ -29,7 +34,7 @@ onMounted(() => {
       }
     );
     const st = tween.scrollTrigger;
-    if (st) triggers.push(st);
+    if (st) collected.push(st);
   });
 
   // Project cards stagger
@@ -52,7 +57,7 @@ onMounted(() => {
       }
     );
     const st = tween.scrollTrigger;
-    if (st) triggers.push(st);
+    if (st) collected.push(st);
   }
 
   // Skill items stagger
@@ -76,7 +81,7 @@ onMounted(() => {
       }
     );
     const st = tween.scrollTrigger;
-    if (st) triggers.push(st);
+    if (st) collected.push(st);
   }
 
   // Subtle parallax on hero
@@ -93,7 +98,7 @@ onMounted(() => {
       },
     });
     const st = tween.scrollTrigger;
-    if (st) triggers.push(st);
+    if (st) collected.push(st);
   }
 
   // Subtle parallax on background grid
@@ -110,8 +115,10 @@ onMounted(() => {
       },
     });
     const st = tween.scrollTrigger;
-    if (st) triggers.push(st);
+    if (st) collected.push(st);
   }
+
+  triggers = collected;
 });
 
 onUnmounted(() => {
