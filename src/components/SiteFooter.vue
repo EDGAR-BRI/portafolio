@@ -10,62 +10,27 @@ const year = new Date().getFullYear();
 </script>
 
 <template>
-  <footer class="site-footer">
-    <div class="footer-row">
-      <span class="cursor">█</span>
+  <footer class="mt-12 pt-6 pb-4 text-[color:var(--muted)] font-mono text-[0.8rem] border-t border-[color:var(--line)] text-center flex flex-col gap-2">
+    <div class="inline-flex items-center justify-center gap-2 flex-wrap">
+      <span class="text-[color:var(--accent)] animate-blink">█</span>
       <span>{{ t.footer }}</span>
-      <span class="tech">
+      <span class="text-[color:var(--accent)] inline-flex items-center gap-1.5">
         <Icon icon="logos:astro-icon" width="14" height="14" />
         Astro
       </span>
       <span>{{ t.and }}</span>
-      <span class="tech">
+      <span class="text-[color:var(--accent)] inline-flex items-center gap-1.5">
         <Icon icon="logos:vue" width="14" height="14" />
         Vue
       </span>
     </div>
-    <div class="footer-copy">© {{ year }} Edgar Bri · github.com/EDGAR-BRI</div>
+    <div class="text-[0.7rem] text-[color:var(--muted)] tracking-[0.1em]">© {{ year }} Edgar Bri · github.com/EDGAR-BRI</div>
   </footer>
 </template>
 
 <style scoped>
-.site-footer {
-  margin-top: 3rem;
-  padding: 1.5rem 0 1rem;
-  color: var(--muted);
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.8rem;
-  border-top: 1px solid var(--line);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.footer-row {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.tech {
-  color: var(--accent);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.cursor {
-  color: var(--accent);
+.animate-blink {
   animation: blink 1s steps(1) infinite;
-}
-
-.footer-copy {
-  font-size: 0.7rem;
-  color: var(--muted);
-  letter-spacing: 0.1em;
 }
 
 @keyframes blink {

@@ -45,9 +45,6 @@ function langColor(name: string | null): string {
     PHP: '#4f5d95',
     HTML: '#e34c26',
     CSS: '#563d7c',
-    C: '#555',
-    'C++': '#f34b7d',
-    'C#': '#178600',
   };
   return name && map[name] ? map[name] : '#8b949e';
 }
@@ -75,51 +72,76 @@ onMounted(load);
 
 <template>
   <section class="live-repos" id="live">
-    <div class="live-header">
-      <div class="live-status">
-        <span class="status-dot" :class="{ ok: !loading && !error, err: error }"></span>
-        <span class="status-text">
-          {{ error ? 'OFFLINE' : (loading ? 'CONNECTING' : 'CONNECTED') }}
-        </span>
+    <div class="flex items-center justify-between mb-4 px-3 py-2 bg-[color:var(--bg-soft)] border border-[color:var(--line)] font-mono text-[0.75rem] tracking-[0.1em]">
+      <div class="flex items-center gap-2 text-[color:var(--muted)]">
+        <span
+          class="w-2 h-2"
+          :class="{
+            'bg-[color:var(--accent)] shadow-[0_0_6px_var(--accent)]': !loading && !error,
+            'bg-[#f85149] shadow-[0_0_6px_#f85149]': error,
+            'bg-[color:var(--muted)]': loading && !error
+          }"
+        ></span>
+        <span>{{ error ? 'OFFLINE' : (loading ? 'CONNECTING' : 'CONNECTED') }}</span>
       </div>
-      <button type="button" class="refresh-btn" :disabled="loading" @click="load" :aria-label="t.sections.live_retry">
-        <Icon icon="lucide:refresh" width="14" height="14" :class="{ spinning: loading }" />
+      <button
+        type="button"
+        class="bg-transparent border border-[color:var(--line)] text-[color:var(--muted)] px-2 py-1 cursor-pointer inline-flex transition-colors duration-150 hover:text-[color:var(--accent)] hover:border-[color:var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed"
+        :disabled="loading"
+        @click="load"
+        :aria-label="t.sections.live_retry"
+      >
+        <Icon icon="lucide:refresh" width="14" height="14" :class="{ 'animate-spin': loading }" />
       </button>
     </div>
 
-    <div v-if="loading" class="state">
-      <Icon icon="lucide:loader" width="16" height="16" class="spinner" />
+    <div
+      v-if="loading"
+      class="flex items-center gap-3 text-[color:var(--muted)] py-6 justify-center font-mono text-[0.85rem] border border-dashed border-[color:var(--line)]"
+    >
+      <Icon icon="lucide:loader" width="16" height="16" class="animate-spin" />
       <span>{{ t.sections.live_loading }}</span>
     </div>
 
-    <div v-else-if="error" class="state error">
+    <div
+      v-else-if="error"
+      class="flex items-center gap-3 text-[#f85149] py-6 justify-center font-mono text-[0.85rem] border border-dashed border-[#f85149]"
+    >
       <Icon icon="lucide:alert-circle" width="16" height="16" />
       <span>{{ t.sections.live_error }}</span>
     </div>
 
-    <ul v-else class="repo-grid">
-      <li v-for="repo in repos" :key="repo.id" class="repo-card corner">
-        <a :href="repo.html_url" target="_blank" rel="noopener noreferrer" class="repo-link">
-          <header class="repo-head">
-            <Icon icon="lucide:git-branch" width="14" height="14" class="repo-icon" />
-            <span class="repo-name">{{ repo.name }}</span>
-            <span class="repo-badge" v-if="featured_slugs.indexOf(repo.name) < 5">
+    <ul v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 -m-px list-none p-0 m-0 border border-[color:var(--line)]">
+      <li
+        v-for="repo in repos"
+        :key="repo.id"
+        class="repo-card corner relative bg-[color:var(--bg-soft)] border border-[color:var(--line)] m-px transition-colors duration-150 hover:bg-[rgba(74,222,128,0.04)]"
+      >
+        <a :href="repo.html_url" target="_blank" rel="noopener noreferrer" class="block p-4 text-inherit no-underline">
+          <header class="flex items-center gap-2 mb-2">
+            <Icon icon="lucide:git-branch" width="14" height="14" class="text-[color:var(--accent)] shrink-0" />
+            <span class="font-mono font-semibold text-[color:var(--fg)] flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[0.9rem]">{{ repo.name }}</span>
+            <span v-if="featured_slugs.indexOf(repo.name) < 5" class="text-[color:var(--accent)] inline-flex">
               <Icon icon="lucide:star" width="12" height="12" />
             </span>
           </header>
 
-          <p v-if="repo.description" class="repo-desc">{{ repo.description }}</p>
+          <p
+            v-if="repo.description"
+            class="text-[0.8rem] text-[color:var(--muted)] m-0 mb-3 leading-[1.45] min-h-[2.4em] overflow-hidden"
+            style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;"
+          >{{ repo.description }}</p>
 
-          <footer class="repo-foot">
-            <span class="meta" v-if="repo.language">
-              <span class="dot" :style="{ background: langColor(repo.language) }"></span>
+          <footer class="flex flex-wrap gap-3.5 text-[0.72rem] text-[color:var(--muted)] font-mono border-t border-dashed border-[color:var(--line)] pt-2.5">
+            <span v-if="repo.language" class="inline-flex items-center gap-1.5">
+              <span class="inline-block w-2 h-2" :style="{ background: langColor(repo.language) }"></span>
               {{ repo.language }}
             </span>
-            <span class="meta">
+            <span class="inline-flex items-center gap-1.5">
               <Icon icon="lucide:star" width="12" height="12" />
               {{ repo.stargazers_count }}
             </span>
-            <span class="meta">
+            <span class="inline-flex items-center gap-1.5">
               <Icon icon="lucide:clock" width="12" height="12" />
               {{ formatDate(repo.pushed_at, lang.value) }}
             </span>
@@ -135,164 +157,7 @@ onMounted(load);
   width: 100%;
 }
 
-.live-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  padding: 0.5rem 0.75rem;
-  background: var(--bg-soft);
-  border: 1px solid var(--line);
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-}
-
-.live-status {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--muted);
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--muted);
-}
-
-.status-dot.ok { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
-.status-dot.err { background: #f85149; box-shadow: 0 0 6px #f85149; }
-
-.refresh-btn {
-  background: transparent;
-  border: 1px solid var(--line);
-  color: var(--muted);
-  padding: 0.3rem 0.5rem;
-  cursor: pointer;
-  display: inline-flex;
-  transition: color 0.15s ease, border-color 0.15s ease;
-}
-
-.refresh-btn:hover:not(:disabled) {
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
-.refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.spinning { animation: spin 0.8s linear infinite; }
-
-.state {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: var(--muted);
-  padding: 1.5rem;
-  justify-content: center;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.85rem;
-  border: 1px dashed var(--line);
-}
-
-.state.error { color: #f85149; }
-
-.spinner { animation: spin 0.8s linear infinite; }
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.repo-grid {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 0;
-  border: 1px solid var(--line);
-}
-
-.repo-card {
-  background: var(--bg-soft);
-  transition: background 0.15s ease;
-  border: 1px solid var(--line);
-  margin: -1px 0 0 -1px;
-  position: relative;
-}
-
 .repo-card:hover {
-  background: rgba(74, 222, 128, 0.04);
   z-index: 1;
-}
-
-.repo-link {
-  display: block;
-  padding: 1rem;
-  color: inherit;
-  text-decoration: none;
-}
-
-.repo-head {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.repo-icon {
-  color: var(--accent);
-  flex-shrink: 0;
-}
-
-.repo-name {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-weight: 600;
-  color: var(--fg);
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 0.9rem;
-}
-
-.repo-badge {
-  color: var(--accent);
-  display: inline-flex;
-}
-
-.repo-desc {
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin: 0 0 0.75rem 0;
-  line-height: 1.45;
-  min-height: 2.4em;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.repo-foot {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.85rem;
-  font-size: 0.72rem;
-  color: var(--muted);
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  border-top: 1px dashed var(--line);
-  padding-top: 0.6rem;
-}
-
-.meta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
 }
 </style>

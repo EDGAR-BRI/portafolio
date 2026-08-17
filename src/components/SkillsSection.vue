@@ -16,22 +16,25 @@ const t = computed(() => translations[lang.value]);
     </h2>
     <p class="section-sub">{{ t.sections.skills_subtitle }}</p>
 
-    <div class="skills-grid">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 -m-px border border-[color:var(--line)]">
       <div
         v-for="(s, i) in skills"
         :key="s.name"
-        class="skill corner"
+        class="skill corner relative px-4 py-3.5 border border-[color:var(--line)] m-px bg-[color:var(--bg-soft)]"
         :style="{ animationDelay: `${i * 0.04}s` }"
       >
-        <div class="skill-head">
-          <Icon :icon="s.icon" class="icon" width="20" height="20" />
-          <span class="name">{{ s.name }}</span>
-          <span class="level">{{ s.level }}%</span>
+        <div class="flex items-center gap-2 mb-3">
+          <Icon :icon="s.icon" class="text-[color:var(--accent)] shrink-0" width="20" height="20" />
+          <span class="flex-1 font-mono text-[0.85rem] text-[color:var(--fg)] font-medium">{{ s.name }}</span>
+          <span class="text-[0.75rem] text-[color:var(--muted)] font-mono tracking-[0.05em]">{{ s.level }}%</span>
         </div>
-        <div class="bar">
-          <div class="fill" :style="{ width: s.level + '%' }"></div>
-          <div class="bar-grid" aria-hidden="true">
-            <span v-for="n in 10" :key="n"></span>
+        <div class="bar relative h-2 flex gap-px">
+          <div
+            class="fill absolute inset-0 bg-[color:var(--accent)] opacity-70 transition-[width] duration-1000 ease-out z-1"
+            :style="{ width: s.level + '%' }"
+          ></div>
+          <div class="absolute inset-0 flex gap-px z-0" aria-hidden="true">
+            <span v-for="n in 10" :key="n" class="flex-1 bg-[color:var(--line)]"></span>
           </div>
         </div>
       </div>
@@ -44,83 +47,14 @@ const t = computed(() => translations[lang.value]);
   margin: 5rem 0;
 }
 
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 0;
-  border: 1px solid var(--line);
-}
-
 .skill {
-  padding: 1rem 1.1rem;
-  border: 1px solid var(--line);
-  margin: -1px 0 0 -1px;
-  background: var(--bg-soft);
   transition: background 0.15s ease, border-color 0.15s ease;
   animation: fadeUp 0.4s ease-out backwards;
-  position: relative;
 }
 
 .skill:hover {
   background: rgba(74, 222, 128, 0.05);
   z-index: 1;
-}
-
-.skill-head {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.75rem;
-}
-
-.icon {
-  color: var(--accent);
-  flex-shrink: 0;
-}
-
-.name {
-  flex: 1;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.85rem;
-  color: var(--fg);
-  font-weight: 500;
-}
-
-.level {
-  font-size: 0.75rem;
-  color: var(--muted);
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  letter-spacing: 0.05em;
-}
-
-.bar {
-  position: relative;
-  height: 8px;
-  background: transparent;
-  display: flex;
-  gap: 1px;
-}
-
-.fill {
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
-  opacity: 0.7;
-  transition: width 1s ease-out;
-  z-index: 1;
-}
-
-.bar-grid {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  gap: 1px;
-  z-index: 0;
-}
-
-.bar-grid span {
-  flex: 1;
-  background: var(--line);
 }
 
 @keyframes fadeUp {

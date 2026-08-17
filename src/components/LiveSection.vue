@@ -9,7 +9,7 @@ const t = computed(() => translations[lang.value]);
 </script>
 
 <template>
-  <section class="live-section">
+  <section class="my-16">
     <div class="section-label">[ live ]</div>
     <h2 class="section-title">
       <span class="hash">#</span> {{ t.sections.live_title }}
@@ -18,9 +18,3 @@ const t = computed(() => translations[lang.value]);
     <LiveRepos client:visible />
   </section>
 </template>
-
-<style scoped>
-.live-section {
-  margin: 4rem 0;
-}
-</style>
