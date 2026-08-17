@@ -49,7 +49,11 @@ function tick() {
 }
 
 onMounted(() => {
-  timer = setTimeout(tick, props.typingSpeed);
+  const first = props.words[0];
+  display.value = first;
+  charIndex.value = first.length;
+  isDeleting.value = true;
+  timer = setTimeout(tick, props.pauseTime);
 });
 
 onUnmounted(() => {
