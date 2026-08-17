@@ -12,11 +12,6 @@ const roles = computed(() => t.value.hero.roles);
 
 <template>
   <section class="hero pt-14 pb-12 flex flex-col gap-3" id="top">
-    <div class="inline-flex items-center gap-2 font-mono text-[0.75rem] text-[color:var(--fg)] bg-[color:var(--bg-soft)] border border-[color:var(--line)] py-1 px-2.5 w-fit tracking-[0.05em]">
-      <Icon icon="lucide:terminal" width="14" height="14" />
-      <span>~/portfolio</span>
-    </div>
-
     <p class="mt-3 mb-0 font-mono text-[0.95rem] text-[color:var(--muted)] flex items-center gap-1.5">
       <Icon icon="lucide:chevron-right" width="16" height="16" class="text-[color:var(--accent)]" />
       {{ t.hero.greeting }}
@@ -55,7 +50,7 @@ const roles = computed(() => t.value.hero.roles);
         <span class="w-2.5 h-2.5 bg-[#27c93f]"></span>
         <span class="ml-2 text-[color:var(--muted)] text-[0.75rem] inline-flex items-center gap-1.5">
           <Icon icon="lucide:terminal" width="12" height="12" />
-          edgar@bri: ~/portfolio
+          edgar@briceño: ~/portfolio
         </span>
       </div>
       <div class="p-4 leading-relaxed">

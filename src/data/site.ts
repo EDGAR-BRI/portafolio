@@ -10,7 +10,7 @@ export const translations = {
     },
     hero: {
       greeting: 'Hola, soy',
-      name: 'Edgar Bri',
+      name: 'Edgar Briceño',
       roles: [
         'Full-stack Developer',
         'Astro & Vue enthusiast',
@@ -31,6 +31,11 @@ export const translations = {
       live_stars: 'stars',
       live_updated: 'actualizado',
       live_retry: 'Reintentar',
+      github_langs_title: 'Stack en GitHub',
+      github_langs_subtitle: 'Distribución de lenguajes en todos mis repos públicos.',
+      github_langs_repos: 'repos',
+      github_contrib_title: 'Contribuciones recientes',
+      github_contrib_subtitle: 'Mi actividad más reciente en GitHub.',
       skills_title: 'Stack & herramientas',
       skills_subtitle: 'Tecnologías con las que trabajo día a día.',
       contact_title: '¿Construimos algo juntos?',
@@ -52,7 +57,7 @@ export const translations = {
     },
     hero: {
       greeting: "Hi, I'm",
-      name: 'Edgar Bri',
+      name: 'Edgar Briceño',
       roles: [
         'Full-stack Developer',
         'Astro & Vue enthusiast',
@@ -73,6 +78,11 @@ export const translations = {
       live_stars: 'stars',
       live_updated: 'updated',
       live_retry: 'Retry',
+      github_langs_title: 'GitHub stack',
+      github_langs_subtitle: 'Language distribution across all my public repos.',
+      github_langs_repos: 'repos',
+      github_contrib_title: 'Recent contributions',
+      github_contrib_subtitle: 'My latest activity on GitHub.',
       skills_title: 'Stack & tools',
       skills_subtitle: 'Technologies I work with every day.',
       contact_title: 'Shall we build something together?',

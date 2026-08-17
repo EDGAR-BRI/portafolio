@@ -5,6 +5,7 @@ import ProjectsGrid from '../components/ProjectsGrid.vue';
 import LiveSection from '../components/LiveSection.vue';
 import SkillsSection from '../components/SkillsSection.vue';
 import ContactSection from '../components/ContactSection.vue';
+import GithubSection from '../components/GithubSection.vue';
 import SiteFooter from '../components/SiteFooter.vue';
 import { getCollection } from 'astro:content';
 
@@ -18,6 +19,7 @@ const projects = entries.map((e) => e.data);
     <ProjectsGrid projects={projects} client:load />
   </div>
   <LiveSection client:visible />
+  <GithubSection client:visible />
   <SkillsSection client:load />
   <ContactSection client:load />
   <SiteFooter client:load />
