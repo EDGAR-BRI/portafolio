@@ -19,20 +19,25 @@ const t = computed(() => translations[lang.value]);
       <div class="flex flex-col sm:flex-row gap-3 flex-wrap mt-6">
         <a
           :href="`mailto:${social.email}`"
-          class="inline-flex items-center justify-center sm:justify-start gap-2 px-4 py-2.5 sm:px-4.5 font-semibold no-underline text-[0.85rem] sm:text-[0.9rem] font-mono tracking-[0.03em] border border-transparent transition-colors duration-150 bg-[color:var(--accent)] text-[color:var(--bg)] hover:bg-transparent hover:text-[color:var(--accent)] hover:border-[color:var(--accent)]"
+          class="contact-btn-primary group inline-flex items-center justify-center sm:justify-start gap-2.5 px-4.5 py-2.5 font-semibold no-underline text-[0.85rem] sm:text-[0.9rem] font-mono tracking-[0.03em] border border-[color:var(--accent)] bg-[rgba(74,222,128,0.12)] text-[color:var(--fg)] rounded-[2px] transition-all duration-200 hover:bg-[color:var(--accent)] hover:text-[color:var(--bg)] hover:shadow-[0_0_14px_rgba(74,222,128,0.3)]"
         >
-          <Icon icon="lucide:mail" width="14" height="14" />
-          {{ t.sections.contact_btn }}
+          <Icon
+            icon="lucide:mail"
+            width="15"
+            height="15"
+            class="text-[color:var(--accent)] group-hover:text-[color:var(--bg)] transition-colors duration-200 shrink-0"
+          />
+          <span>{{ t.sections.contact_btn }}</span>
         </a>
         <a
           :href="social.github"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center justify-center sm:justify-start gap-2 px-4 py-2.5 sm:px-4.5 font-semibold no-underline text-[0.85rem] sm:text-[0.9rem] font-mono tracking-[0.03em] transition-colors duration-150 bg-transparent text-[color:var(--fg)] border border-[color:var(--line)] hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+          class="contact-btn-secondary group inline-flex items-center justify-center sm:justify-start gap-2 px-4.5 py-2.5 font-semibold no-underline text-[0.85rem] sm:text-[0.9rem] font-mono tracking-[0.03em] transition-all duration-200 bg-[rgba(255,255,255,0.02)] text-[color:var(--fg)] border border-[color:var(--line)] rounded-[2px] hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
         >
-          <Icon icon="lucide:github" width="14" height="14" />
-          github.com/EDGAR-BRI
-          <Icon icon="lucide:external-link" width="12" height="12" />
+          <Icon icon="lucide:github" width="15" height="15" class="text-[color:var(--accent)] shrink-0" />
+          <span>github.com/EDGAR-BRI</span>
+          <Icon icon="lucide:external-link" width="13" height="13" class="text-[color:var(--muted)] group-hover:text-[color:var(--accent)] transition-colors shrink-0" />
         </a>
       </div>
     </div>
