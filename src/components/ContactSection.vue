@@ -9,17 +9,17 @@ const t = computed(() => translations[lang.value]);
 </script>
 
 <template>
-  <section class="my-20" id="contact">
-    <div class="contact-inner corner relative p-10 bg-[color:var(--bg-soft)] border border-[color:var(--line)]">
+  <section class="my-12 sm:my-20" id="contact">
+    <div class="contact-inner corner relative p-5 sm:p-8 md:p-10 bg-[color:var(--bg-soft)] border border-[color:var(--line)]">
       <div class="section-label">[ contact ]</div>
       <h2 class="section-title">
         <span class="hash">#</span> {{ t.sections.contact_title }}
       </h2>
       <p class="section-sub">{{ t.sections.contact_subtitle }}</p>
-      <div class="flex gap-3 flex-wrap mt-6">
+      <div class="flex flex-col sm:flex-row gap-3 flex-wrap mt-6">
         <a
           :href="`mailto:${social.email}`"
-          class="inline-flex items-center gap-2 px-4.5 py-2.5 font-semibold no-underline text-[0.9rem] font-mono tracking-[0.03em] border border-transparent transition-colors duration-150 bg-[color:var(--accent)] text-[color:var(--bg)] hover:bg-transparent hover:text-[color:var(--accent)] hover:border-[color:var(--accent)]"
+          class="inline-flex items-center justify-center sm:justify-start gap-2 px-4 py-2.5 sm:px-4.5 font-semibold no-underline text-[0.85rem] sm:text-[0.9rem] font-mono tracking-[0.03em] border border-transparent transition-colors duration-150 bg-[color:var(--accent)] text-[color:var(--bg)] hover:bg-transparent hover:text-[color:var(--accent)] hover:border-[color:var(--accent)]"
         >
           <Icon icon="lucide:mail" width="14" height="14" />
           {{ t.sections.contact_btn }}
@@ -28,7 +28,7 @@ const t = computed(() => translations[lang.value]);
           :href="social.github"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-4.5 py-2.5 font-semibold no-underline text-[0.9rem] font-mono tracking-[0.03em] transition-colors duration-150 bg-transparent text-[color:var(--fg)] border border-[color:var(--line)] hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+          class="inline-flex items-center justify-center sm:justify-start gap-2 px-4 py-2.5 sm:px-4.5 font-semibold no-underline text-[0.85rem] sm:text-[0.9rem] font-mono tracking-[0.03em] transition-colors duration-150 bg-transparent text-[color:var(--fg)] border border-[color:var(--line)] hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
         >
           <Icon icon="lucide:github" width="14" height="14" />
           github.com/EDGAR-BRI

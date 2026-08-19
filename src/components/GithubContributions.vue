@@ -180,10 +180,10 @@ onMounted(() => load());
       <li
         v-for="(ev, i) in events"
         :key="ev.id"
-        class="contrib-row px-4 py-2 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.03)] transition-colors duration-150"
+        class="contrib-row px-3 sm:px-4 py-2 sm:py-2.5 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.03)] transition-colors duration-150"
         :style="{ animationDelay: `${i * 0.03}s` }"
       >
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
           <Icon
             :icon="typeLabel(ev.type).icon"
             width="13"
@@ -195,22 +195,22 @@ onMounted(() => load());
             :href="ev.repoUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex-1 text-[color:var(--fg)] no-underline hover:text-[color:var(--accent)] transition-colors duration-150 truncate text-[0.82rem]"
+            class="flex-1 min-w-0 text-[color:var(--fg)] no-underline hover:text-[color:var(--accent)] transition-colors duration-150 truncate text-[0.78rem] sm:text-[0.82rem]"
           >
             <span class="text-[color:var(--muted)]">{{ ev.action }}</span>
-            <span class="mx-1.5 text-[color:var(--accent)]">›</span>
-            <span class="text-[color:var(--accent)]">{{ ev.repoName }}</span>
-            <span v-if="ev.type === 'PushEvent' && ev.count" class="ml-2 text-[color:var(--muted)] text-[0.7rem]">
+            <span class="mx-1 text-[color:var(--accent)]">›</span>
+            <span class="text-[color:var(--accent)] font-medium">{{ ev.repoName }}</span>
+            <span v-if="ev.type === 'PushEvent' && ev.count" class="ml-1.5 text-[color:var(--muted)] text-[0.68rem] sm:text-[0.7rem]">
               · {{ ev.branch }} · {{ ev.count }}
             </span>
-            <span v-else-if="ev.type === 'PullRequestEvent' && ev.prTitle" class="ml-2 text-[color:var(--muted)] text-[0.7rem] truncate">
+            <span v-else-if="ev.type === 'PullRequestEvent' && ev.prTitle" class="ml-1.5 text-[color:var(--muted)] text-[0.68rem] sm:text-[0.7rem] truncate">
               · {{ ev.prTitle }}
             </span>
-            <span v-else-if="ev.type === 'ReleaseEvent' && ev.releaseName" class="ml-2 text-[color:var(--muted)] text-[0.7rem]">
+            <span v-else-if="ev.type === 'ReleaseEvent' && ev.releaseName" class="ml-1.5 text-[color:var(--muted)] text-[0.68rem] sm:text-[0.7rem]">
               · {{ ev.releaseName }}
             </span>
           </a>
-          <span class="w-20 shrink-0 text-right text-[0.7rem] text-[color:var(--muted)]">{{ ev.timeAgo }}</span>
+          <span class="w-16 sm:w-20 shrink-0 text-right text-[0.68rem] sm:text-[0.7rem] text-[color:var(--muted)]">{{ ev.timeAgo }}</span>
         </div>
       </li>
     </ul>

@@ -245,15 +245,19 @@ onMounted(load);
 }
 
 .calendar-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
+  position: relative;
 }
 
 .calendar-grid {
   display: grid;
-  grid-template-columns: 24px repeat(53, minmax(0, 1fr));
+  grid-template-columns: 24px repeat(53, minmax(10px, 1fr));
   grid-template-rows: 16px repeat(7, auto);
   gap: 2px;
   align-items: start;
+  min-width: 580px;
 }
 
 .month-label {
@@ -279,11 +283,21 @@ onMounted(load);
 .cell {
   width: 100%;
   aspect-ratio: 1;
+  min-width: 8px;
+  min-height: 8px;
+  border-radius: 1px;
 }
 
 .legend-cell {
   display: inline-block;
   width: 10px;
   height: 10px;
+  border-radius: 1px;
+}
+
+@media (max-width: 640px) {
+  .calendar-wrap {
+    padding: 0.65rem;
+  }
 }
 </style>

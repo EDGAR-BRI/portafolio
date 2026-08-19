@@ -273,4 +273,34 @@ const visible = computed(() => {
   border-color: var(--accent);
   color: var(--accent);
 }
+
+@media (max-width: 640px) {
+  .projects-section {
+    margin: 2.5rem 0;
+  }
+
+  .project-card {
+    padding: 1.1rem;
+    min-height: auto;
+    gap: 0.75rem;
+  }
+
+  .project-title {
+    font-size: 1.05rem;
+  }
+
+  .project-description {
+    font-size: 0.84rem;
+  }
+
+  .card-foot {
+    gap: 0.4rem;
+    padding-top: 0.75rem;
+  }
+
+  .btn {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.74rem;
+  }
+}
 </style>

@@ -9,7 +9,7 @@ const t = computed(() => translations[lang.value]);
 </script>
 
 <template>
-  <section class="my-16">
+  <section class="my-12 sm:my-16">
     <div class="section-label">[ live ]</div>
     <h2 class="section-title">
       <span class="hash">#</span> {{ t.sections.live_title }}

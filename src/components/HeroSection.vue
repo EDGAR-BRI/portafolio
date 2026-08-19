@@ -30,13 +30,13 @@ onMounted(() => {
 
 <template>
   <section
-    class="hero pt-14 pb-12 flex flex-col gap-3"
+    class="hero pt-8 sm:pt-14 pb-8 sm:pb-12 flex flex-col gap-2.5 sm:gap-3"
     :class="{ 'hero-enter': entered }"
     id="top"
   >
-    <div class="flex flex-col ">
+    <div class="flex flex-col">
       <p
-        class="mt-3 mb-0  font-mono text-[0.95rem] text-[color:var(--muted)] flex items-center gap-1.5"
+        class="mt-2 sm:mt-3 mb-0 font-mono text-[0.88rem] sm:text-[0.95rem] text-[color:var(--muted)] flex items-center gap-1.5"
       >
         <Icon
           icon="lucide:chevron-right"
@@ -47,27 +47,27 @@ onMounted(() => {
         {{ t.hero.greeting }}
       </p>
       <h1
-        class="text-[clamp(2.5rem,6vw,4.5rem)] font-bold m-0 tracking-[-0.02em] font-mono hero-name -translate-y-3 -translate-x-2"
+        class="text-[clamp(2.1rem,7.5vw,4.5rem)] font-bold m-0 tracking-[-0.02em] font-mono hero-name -translate-y-1 sm:-translate-y-3 translate-x-0 sm:-translate-x-2"
       >
         {{ t.hero.name }}
       </h1>
     </div>
 
     <h2
-      class="text-[clamp(1.05rem,2.3vw,1.4rem)] mt-1 mb-0 font-medium font-mono min-h-[1.5em] text-[color:var(--accent)]"
+      class="text-[clamp(1rem,2.8vw,1.4rem)] mt-0.5 sm:mt-1 mb-0 font-medium font-mono min-h-[1.5em] text-[color:var(--accent)]"
     >
       <Typewriter :words="roles" client:load />
     </h2>
     <p
-      class="text-[1rem] text-[color:var(--muted)] max-w-160 leading-relaxed mt-2 mb-6"
+      class="text-[0.92rem] sm:text-[1rem] text-[color:var(--muted)] max-w-160 leading-relaxed mt-2 mb-4 sm:mb-6"
     >
       {{ t.hero.bio }}
     </p>
 
-    <div class="flex gap-4 flex-wrap mb-12">
+    <div class="flex gap-3 sm:gap-4 flex-wrap mb-8 sm:mb-12">
       <a
         href="#projects"
-        class="btn-primary inline-flex items-center gap-2 px-1 py-1 no-underline text-[0.9rem] font-mono tracking-[0.02em] text-[color:var(--accent)] transition-colors duration-150 hover:text-[color:var(--fg)]"
+        class="btn-primary inline-flex items-center gap-2 px-2 py-1.5 sm:px-1 sm:py-1 no-underline text-[0.88rem] sm:text-[0.9rem] font-mono tracking-[0.02em] text-[color:var(--accent)] transition-colors duration-150 hover:text-[color:var(--fg)]"
       >
         <span class="prompt-arrow">&gt;</span>
         <span
@@ -78,7 +78,7 @@ onMounted(() => {
       </a>
       <a
         :href="`mailto:${social.email}`"
-        class="btn-ghost inline-flex items-center gap-2 px-1 py-1 no-underline text-[0.9rem] font-mono tracking-[0.02em] text-[color:var(--muted)] transition-colors duration-150 hover:text-[color:var(--accent)]"
+        class="btn-ghost inline-flex items-center gap-2 px-2 py-1.5 sm:px-1 sm:py-1 no-underline text-[0.88rem] sm:text-[0.9rem] font-mono tracking-[0.02em] text-[color:var(--muted)] transition-colors duration-150 hover:text-[color:var(--accent)]"
       >
         <span class="prompt-arrow muted-arrow">·</span>
         <span

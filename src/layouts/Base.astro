@@ -17,44 +17,6 @@ const { title = 'Edgar Briceño · Full-stack Developer y Portafolio', descripti
 
 const ogImage = new URL('/og.png', Astro.site).toString();
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: '¿Quién es Edgar Briceño?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Edgar Briceño es un desarrollador full-stack que construye aplicaciones web con foco en rendimiento, accesibilidad y experiencia de usuario. Trabaja con Astro, Vue, AdonisJS, TypeScript y Node.js.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: '¿Qué tecnologías usa Edgar Briceño?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Su stack principal incluye Astro, Vue 3, Pinia, React, TypeScript, JavaScript, AdonisJS, Node.js, Tailwind CSS, PostgreSQL, MySQL y Docker.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: '¿Cómo contactar a Edgar Briceño?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Puedes escribirle por correo a edgardev26@gmail.com o ver su código en github.com/EDGAR-BRI.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: '¿Qué tipo de proyectos desarrolla Edgar Briceño?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Desarrolla aplicaciones web full-stack, dashboards, herramientas CLI y frontends con React, además de participar en proyectos open source.',
-      },
-    },
-  ],
-};
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
@@ -125,7 +87,6 @@ const websiteSchema = {
 
     <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
-    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
     <script is:inline>
       (function () {
@@ -164,6 +125,22 @@ const websiteSchema = {
         } catch (e) {
           document.documentElement.lang = 'es';
         }
+
+        // Header compact on scroll
+        try {
+          var header = document.querySelector('.site-header');
+          if (header) {
+            var handleHeaderScroll = function () {
+              if (window.scrollY > 20) {
+                header.classList.add('is-scrolled');
+              } else {
+                header.classList.remove('is-scrolled');
+              }
+            };
+            window.addEventListener('scroll', handleHeaderScroll, { passive: true });
+            handleHeaderScroll();
+          }
+        } catch (e) {}
       })();
     </script>
 
@@ -175,12 +152,26 @@ const websiteSchema = {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 1rem 2rem;
+        padding: 0.9rem 2rem;
         background: rgba(6, 8, 11, 0.85);
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         border-bottom: 1px solid var(--line);
         opacity: 1;
-        transition: opacity 0.4s ease 0.55s;
+        transition: padding 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                    background 0.25s ease,
+                    border-color 0.25s ease,
+                    box-shadow 0.25s ease,
+                    opacity 0.4s ease 0.55s;
+      }
+
+      .site-header.is-scrolled {
+        padding: 0.5rem 2rem;
+        background: rgba(6, 8, 11, 0.94);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom-color: rgba(74, 222, 128, 0.2);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(74, 222, 128, 0.1);
       }
 
       main {
@@ -210,8 +201,34 @@ const websiteSchema = {
       }
 
       @media (max-width: 640px) {
-        .site-header { padding: 0.75rem 1rem; flex-wrap: wrap; gap: 0.5rem; }
-        .brand { font-size: 0.85rem; }
+        .site-header {
+          padding: 0.55rem 1rem;
+          flex-wrap: wrap;
+          gap: 0.35rem;
+        }
+
+        .site-header.is-scrolled {
+          padding: 0.35rem 0.85rem;
+          gap: 0.25rem;
+        }
+
+        main {
+          padding: 0 1rem 3rem;
+        }
+      }
+
+      @media (max-width: 380px) {
+        .site-header {
+          padding: 0.45rem 0.75rem;
+        }
+
+        .site-header.is-scrolled {
+          padding: 0.3rem 0.65rem;
+        }
+
+        main {
+          padding: 0 0.75rem 2.5rem;
+        }
       }
     </style>
   </body>

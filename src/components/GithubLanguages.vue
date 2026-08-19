@@ -148,25 +148,25 @@ onMounted(() => load());
       <li
         v-for="(l, i) in languages"
         :key="l.name"
-        class="lang-row flex items-center gap- px-4 py-3 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.04)] transition-colors duration-150"
+        class="lang-row flex items-center gap-2.5 sm:gap-3.5 px-3 py-2.5 sm:px-4 sm:py-3 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.04)] transition-colors duration-150"
         :style="{ animationDelay: `${i * 0.03}s` }"
       >
         <Icon :icon="l.icon" width="16" height="16" class="shrink-0" />
-        <span class="w-24 shrink-0 text-[0.8rem] text-[color:var(--fg)]">{{ l.name }}</span>
-        <div class="flex-1 h-4 flex items-center">
+        <span class="w-20 sm:w-24 shrink-0 text-[0.75rem] sm:text-[0.8rem] text-[color:var(--fg)] truncate">{{ l.name }}</span>
+        <div class="flex-1 h-4 flex items-center min-w-[30px]">
           <div
-            class="h-3 transition-[width] duration-700 ease-out"
+            class="h-2.5 sm:h-3 transition-[width] duration-700 ease-out rounded-[1px]"
             :style="{
               width: l.pct + '%',
               background: langColor(l.name),
-              opacity: 0.7,
-              boxShadow: `0 0 12px ${langColor(l.name)}55`,
+              opacity: 0.75,
+              boxShadow: `0 0 10px ${langColor(l.name)}44`,
             }"
             :title="`${l.name}: ${l.count} repos (${l.pct}%)`"
           ></div>
         </div>
-        <span class="w-10 shrink-0 text-right text-[0.75rem] text-[color:var(--muted)]">{{ l.count }}</span>
-        <span class="w-12 shrink-0 text-right text-[0.75rem] text-[color:var(--accent)] font-bold">{{ l.pct }}%</span>
+        <span class="w-7 sm:w-10 shrink-0 text-right text-[0.7rem] sm:text-[0.75rem] text-[color:var(--muted)]">{{ l.count }}</span>
+        <span class="w-9 sm:w-12 shrink-0 text-right text-[0.7rem] sm:text-[0.75rem] text-[color:var(--accent)] font-bold">{{ l.pct }}%</span>
       </li>
     </ul>
 

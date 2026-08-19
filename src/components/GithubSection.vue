@@ -11,18 +11,18 @@ const t = computed(() => translations[lang.value]);
 </script>
 
 <template>
-  <section class="my-16" id="github-stack">
+  <section class="my-12 sm:my-16" id="github-stack">
     <div class="section-label">[ github ]</div>
     <h2 class="section-title">
       <span class="hash">#</span> {{ t.sections.github_langs_title }}
     </h2>
     <p class="section-sub">{{ t.sections.github_langs_subtitle }}</p>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
       <div>
         <GithubLanguages client:visible />
       </div>
-      <div class="flex flex-col gap-8">
+      <div class="flex flex-col gap-6 sm:gap-8">
         <GithubContributions client:visible />
         <GithubCalendar client:visible />
       </div>

@@ -70,15 +70,23 @@ onUnmounted(() => {
 });
 
 function scrollTo(id: string) {
+  if (typeof window === 'undefined') return;
+  if (id === 'top') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
   const el = document.getElementById(id);
   if (!el) return;
-  el.scrollIntoView({ behavior: 'smooth' });
+  const header = document.querySelector('.site-header');
+  const headerHeight = header ? header.getBoundingClientRect().height : 56;
+  const targetTop = el.getBoundingClientRect().top + window.scrollY - headerHeight - 14;
+  window.scrollTo({ top: targetTop, behavior: 'smooth' });
 }
 </script>
 
 <template>
   <div class="terminal-header">
-    <a href="#top" class="brand" aria-label="Home">
+    <a href="#top" class="brand" aria-label="Home" @click.prevent="scrollTo('top')">
       <span class="prompt">~/</span>
       <span class="brand-name">edgar</span>
       <span class="current-path">{{ currentSegment }}</span>
@@ -90,6 +98,7 @@ function scrollTo(id: string) {
         :key="item.id"
         :href="'#' + item.id"
         class="nav-link"
+        :class="{ active: currentSegment === '/' + item.path || (item.id === 'top' && !currentSegment) }"
         @click.prevent="scrollTo(item.id)"
       >
         <span class="cmd">cd</span>
@@ -106,6 +115,7 @@ function scrollTo(id: string) {
   justify-content: space-between;
   gap: 1.25rem;
   flex: 1;
+  min-width: 0;
 }
 
 .brand {
@@ -118,21 +128,36 @@ function scrollTo(id: string) {
   align-items: center;
   gap: 0.05rem;
   white-space: nowrap;
+  min-width: 0;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.brand:hover {
+  opacity: 0.85;
 }
 
 .prompt { color: var(--accent); }
 
+.brand-name {
+  color: var(--fg);
+}
+
 .current-path {
   color: var(--muted);
   font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
 }
 
 .terminal-nav {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.85rem;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 0.8rem;
+  transition: gap 0.2s ease;
 }
 
 .nav-link {
@@ -141,13 +166,20 @@ function scrollTo(id: string) {
   gap: 0.35rem;
   text-decoration: none;
   color: var(--muted);
-  transition: color 0.15s ease;
+  transition: all 0.15s ease;
   white-space: nowrap;
+  padding: 0.2rem 0.35rem;
+  border-radius: 2px;
+  border: 1px solid transparent;
 }
 
 .nav-link:hover,
 .nav-link:focus {
   color: var(--accent);
+}
+
+.nav-link.active {
+  color: var(--fg);
 }
 
 .cmd {
@@ -162,14 +194,39 @@ function scrollTo(id: string) {
 @media (max-width: 860px) {
   .terminal-header {
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.35rem;
+  }
+
+  .brand {
+    font-size: 0.88rem;
   }
 
   .terminal-nav {
-    gap: 0.65rem;
-    font-size: 0.75rem;
+    gap: 0.45rem;
+    font-size: 0.74rem;
     width: 100%;
     order: 3;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0.1rem 0 0.25rem;
+  }
+
+  .terminal-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-link {
+    padding: 0.2rem 0.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+
+  .nav-link.active {
+    border-color: rgba(74, 222, 128, 0.4);
+    background: rgba(74, 222, 128, 0.08);
+    color: var(--accent);
   }
 }
 </style>
