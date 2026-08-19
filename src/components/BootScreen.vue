@@ -246,7 +246,10 @@ function typeEnterLines() {
     setTimeout(() => {
       document.documentElement.classList.remove('boot-pending', 'boot-dropping');
       shown.value = false;
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.touchAction = '';
       document.body.style.overflow = '';
+      document.body.style.touchAction = '';
       try { window.sessionStorage.setItem(SESSION_KEY, '1'); } catch {}
       window.dispatchEvent(new CustomEvent('portfolio:boot-done'));
     }, 550);
@@ -263,7 +266,10 @@ function skipIntro() {
   setTimeout(() => {
     document.documentElement.classList.remove('boot-pending', 'boot-dropping');
     shown.value = false;
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.touchAction = '';
     document.body.style.overflow = '';
+    document.body.style.touchAction = '';
     try { window.sessionStorage.setItem(SESSION_KEY, '1'); } catch {}
     window.dispatchEvent(new CustomEvent('portfolio:boot-done'));
   }, 350);
@@ -310,6 +316,10 @@ onMounted(() => {
   if (typeof window !== 'undefined' && window.sessionStorage.getItem(SESSION_KEY) === '1') {
     shown.value = false;
     document.documentElement.classList.remove('boot-pending');
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.touchAction = '';
+    document.body.style.overflow = '';
+    document.body.style.touchAction = '';
     window.dispatchEvent(new CustomEvent('portfolio:boot-done'));
     return;
   }
@@ -324,7 +334,10 @@ onMounted(() => {
     minute: '2-digit',
   });
 
+  document.documentElement.style.overflow = 'hidden';
+  document.documentElement.style.touchAction = 'none';
   document.body.style.overflow = 'hidden';
+  document.body.style.touchAction = 'none';
 
   startSequence();
 });
@@ -333,6 +346,12 @@ onUnmounted(() => {
   clearTimers();
   clearAutoEnter();
   if (keyHandler) window.removeEventListener('keydown', keyHandler);
+  if (typeof window !== 'undefined') {
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.touchAction = '';
+    document.body.style.overflow = '';
+    document.body.style.touchAction = '';
+  }
 });
 </script>
 

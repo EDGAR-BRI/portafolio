@@ -184,9 +184,19 @@ const websiteSchema = {
                     opacity 0.45s ease;
       }
 
-      html.boot-pending .site-header {
-        opacity: 0;
-        transition: none;
+      html.boot-pending,
+      html.boot-pending body {
+        overflow: hidden !important;
+        height: 100vh !important;
+        touch-action: none !important;
+      }
+
+      html.boot-pending .site-header,
+      html.boot-pending .scroll-progress {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        transition: none !important;
       }
 
       html.boot-pending main {

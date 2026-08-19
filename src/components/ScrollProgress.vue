@@ -2,6 +2,7 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 
 const progress = ref(0);
+const visible = ref(false);
 
 function update() {
   const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -10,6 +11,18 @@ function update() {
 }
 
 onMounted(() => {
+  if (typeof window === 'undefined') return;
+
+  const isBooted = window.sessionStorage.getItem('portfolio.booted') === '1';
+  if (isBooted) {
+    visible.value = true;
+  } else {
+    window.addEventListener('portfolio:boot-done', () => {
+      visible.value = true;
+      update();
+    }, { once: true });
+  }
+
   update();
   window.addEventListener('scroll', update, { passive: true });
 });
@@ -20,7 +33,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="scroll-progress" aria-hidden="true">
+  <div v-show="visible" class="scroll-progress" aria-hidden="true">
     <div class="scroll-progress-bar" :style="{ width: progress + '%' }"></div>
   </div>
 </template>
@@ -32,8 +45,9 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   height: 2px;
-  z-index: 101;
+  z-index: 60;
   background: rgba(139, 148, 158, 0.12);
+  transition: opacity 0.3s ease;
 }
 
 .scroll-progress-bar {
