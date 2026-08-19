@@ -215,7 +215,7 @@ const events = computed<EventItem[]>(() => {
   for (const raw of data.value) {
     if (!raw?.type || !raw?.repo?.name) continue;
     list.push(parseEvent(raw, lang.value));
-    if (list.length >= 8) break;
+    if (list.length >= 4) break;
   }
   return list;
 });
@@ -448,7 +448,7 @@ onMounted(() => load());
   display: flex;
   align-items: flex-start;
   gap: 0.65rem;
-  padding: 0.55rem 0.85rem;
+  padding: 0.42rem 0.85rem;
   font-family: 'JetBrains Mono', monospace;
 }
 

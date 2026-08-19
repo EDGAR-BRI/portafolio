@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { onMounted, computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLang } from '../stores/lang';
 import { translations } from '../data/site';
@@ -104,77 +104,97 @@ onMounted(() => load());
 
 <template>
   <section class="github-langs">
-    <div class="flex items-center justify-between mb-3 px-3 py-1.5 bg-[color:var(--bg-soft)] border border-[color:var(--line)] font-mono text-[0.75rem] tracking-[0.1em]">
-      <div class="flex items-center gap-2 text-[color:var(--muted)]">
-        <Icon icon="lucide:terminal" width="13" height="13" class="text-[color:var(--accent)]" />
-        <span>gh-stack — {{ username }}</span>
+    <div class="header-bar flex items-center justify-between mb-3 px-3 py-2 bg-[color:var(--bg-soft)] border border-[color:var(--line)] font-mono text-[0.75rem] tracking-[0.08em]">
+      <div class="flex items-center gap-2 text-[color:var(--fg)] min-w-0">
+        <Icon icon="lucide:terminal" width="14" height="14" class="text-[color:var(--accent)] shrink-0" />
+        <span class="font-bold truncate">gh-stack</span>
+        <span class="text-[color:var(--muted)] text-[0.7rem] hidden sm:inline truncate">/ {{ username }}</span>
       </div>
-      <div class="flex items-center gap-3">
-        <span class="text-[color:var(--muted)]" v-if="!loading && !error && data">
+      <div class="flex items-center gap-2.5 shrink-0">
+        <span class="text-[color:var(--muted)] text-[0.7rem]" v-if="!loading && !error && data">
           {{ totalRepos }} {{ lang === 'es' ? 'repos' : 'repos' }}
         </span>
         <button
           type="button"
-          class="bg-transparent border border-[color:var(--line)] text-[color:var(--muted)] px-1.5 py-0.5 cursor-pointer inline-flex items-center transition-colors duration-150 hover:text-[color:var(--accent)] hover:border-[color:var(--accent)] disabled:opacity-50"
+          class="refresh-btn"
           :disabled="loading"
           @click="refresh"
-          :aria-label="t.sections.live_retry"
+          :title="lang === 'es' ? 'Recargar stack' : 'Refresh stack'"
+          :aria-label="lang === 'es' ? 'Recargar stack' : 'Refresh stack'"
         >
-          <Icon icon="lucide:refresh" width="12" height="12" :class="{ 'animate-spin': loading }" />
+          <Icon icon="lucide:refresh-cw" width="12" height="12" :class="{ 'animate-spin': loading }" />
         </button>
       </div>
     </div>
 
+    <!-- Loading State -->
     <div
       v-if="loading"
-      class="flex items-center gap-3 text-[color:var(--muted)] py-6 justify-center font-mono text-[0.85rem] border border-dashed border-[color:var(--line)]"
+      class="state-box loading-box flex-1"
     >
-      <Icon icon="lucide:loader" width="16" height="16" class="animate-spin" />
+      <Icon icon="lucide:loader" width="16" height="16" class="animate-spin text-[color:var(--accent)]" />
       <span>{{ t.sections.live_loading }}</span>
     </div>
 
+    <!-- Error State -->
     <div
       v-else-if="error"
-      class="flex items-center gap-3 text-[#f85149] py-6 justify-center font-mono text-[0.85rem] border border-dashed border-[#f85149]"
+      class="state-box error-box flex-1"
     >
       <Icon icon="lucide:alert-circle" width="16" height="16" />
       <span>{{ t.sections.live_error }}</span>
+      <button type="button" class="retry-inline-btn" @click="refresh">
+        {{ lang === 'es' ? 'Reintentar' : 'Retry' }}
+      </button>
     </div>
 
-    <ul
-      v-else-if="languages.length"
-      class="list-none p-0 m-0 border border-[color:var(--line)]"
-    >
-      <li
-        v-for="(l, i) in languages"
-        :key="l.name"
-        class="lang-row flex items-center gap-2.5 sm:gap-3.5 px-3 py-2.5 sm:px-4 sm:py-3 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.04)] transition-colors duration-150"
-        :style="{ animationDelay: `${i * 0.03}s` }"
-      >
-        <Icon :icon="l.icon" width="16" height="16" class="shrink-0" />
-        <span class="w-20 sm:w-24 shrink-0 text-[0.75rem] sm:text-[0.8rem] text-[color:var(--fg)] truncate">{{ l.name }}</span>
-        <div class="flex-1 h-4 flex items-center min-w-[30px]">
-          <div
-            class="h-2.5 sm:h-3 transition-[width] duration-700 ease-out rounded-[1px]"
-            :style="{
-              width: l.pct + '%',
-              background: langColor(l.name),
-              opacity: 0.75,
-              boxShadow: `0 0 10px ${langColor(l.name)}44`,
-            }"
-            :title="`${l.name}: ${l.count} repos (${l.pct}%)`"
-          ></div>
-        </div>
-        <span class="w-7 sm:w-10 shrink-0 text-right text-[0.7rem] sm:text-[0.75rem] text-[color:var(--muted)]">{{ l.count }}</span>
-        <span class="w-9 sm:w-12 shrink-0 text-right text-[0.7rem] sm:text-[0.75rem] text-[color:var(--accent)] font-bold">{{ l.pct }}%</span>
-      </li>
-    </ul>
+    <!-- Languages Container with List & Summary Footer -->
+    <div v-else-if="languages.length" class="langs-container border border-[color:var(--line)] bg-[rgba(6,8,11,0.4)] flex-1 flex flex-col justify-between">
+      <ul class="langs-list list-none p-0 m-0 flex-1 flex flex-col justify-between">
+        <li
+          v-for="(l, i) in languages.slice(0, 8)"
+          :key="l.name"
+          class="lang-row flex items-center gap-2.5 sm:gap-3 px-3 py-2 sm:px-4 border-b border-[color:var(--line)] last:border-b-0 font-mono hover:bg-[rgba(74,222,128,0.04)] transition-colors duration-150"
+          :style="{ animationDelay: `${i * 0.03}s` }"
+        >
+          <Icon :icon="l.icon" width="15" height="15" class="shrink-0" />
+          <span class="w-20 sm:w-24 shrink-0 text-[0.75rem] sm:text-[0.78rem] text-[color:var(--fg)] truncate font-medium">{{ l.name }}</span>
+          <div class="flex-1 h-3.5 flex items-center min-w-[30px]">
+            <div
+              class="h-2 sm:h-2.5 transition-[width] duration-700 ease-out rounded-[1px]"
+              :style="{
+                width: l.pct + '%',
+                background: langColor(l.name),
+                opacity: 0.85,
+                boxShadow: `0 0 8px ${langColor(l.name)}44`,
+              }"
+              :title="`${l.name}: ${l.count} repos (${l.pct}%)`"
+            ></div>
+          </div>
+          <span class="w-6 sm:w-8 shrink-0 text-right text-[0.68rem] sm:text-[0.72rem] text-[color:var(--muted)]">{{ l.count }}</span>
+          <span class="w-8 sm:w-10 shrink-0 text-right text-[0.68rem] sm:text-[0.72rem] text-[color:var(--accent)] font-bold">{{ l.pct }}%</span>
+        </li>
+      </ul>
+
+      <!-- Summary Footer -->
+      <div class="langs-footer flex items-center justify-between px-3 py-2 border-t border-[color:var(--line)] font-mono text-[0.68rem] text-[color:var(--muted)] bg-[color:var(--bg-soft)]">
+        <span class="truncate">
+          <span class="text-[color:var(--accent)] font-bold">&gt;</span>
+          {{ lang === 'es' ? 'Lenguaje principal' : 'Top language' }}:
+          <span class="text-[color:var(--fg)] font-semibold">{{ languages[0]?.name }}</span>
+        </span>
+        <span class="shrink-0 text-[color:var(--muted)]">
+          {{ languages.length }} {{ lang === 'es' ? 'detectados' : 'detected' }}
+        </span>
+      </div>
+    </div>
 
     <div
       v-else
-      class="text-[color:var(--muted)] py-6 text-center font-mono text-[0.85rem] border border-dashed border-[color:var(--line)]"
+      class="state-box empty-box flex-1"
     >
-      No data
+      <Icon icon="lucide:inbox" width="16" height="16" class="text-[color:var(--muted)]" />
+      <span>No data</span>
     </div>
   </section>
 </template>
@@ -182,9 +202,73 @@ onMounted(() => load());
 <style scoped>
 .github-langs {
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.refresh-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  padding: 0.25rem 0.45rem;
+  border-radius: 2px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(74, 222, 128, 0.08);
+}
+
+.refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.state-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+}
+
+.error-box {
+  border-color: #f85149;
+  color: #f85149;
+  background: rgba(248, 81, 73, 0.04);
+}
+
+.retry-inline-btn {
+  background: transparent;
+  border: 1px solid #f85149;
+  color: #f85149;
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.15s ease;
+}
+
+.retry-inline-btn:hover {
+  background: #f85149;
+  color: #06080b;
 }
 
 .lang-row {
+  flex: 1;
+  min-height: 38px;
   animation: fadeIn 0.35s ease-out backwards;
 }
 

@@ -18,11 +18,11 @@ const t = computed(() => translations[lang.value]);
     </h2>
     <p class="section-sub">{{ t.sections.github_langs_subtitle }}</p>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-      <div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 items-stretch">
+      <div class="flex flex-col h-full">
         <GithubLanguages client:visible />
       </div>
-      <div class="flex flex-col gap-6 sm:gap-8">
+      <div class="flex flex-col justify-between gap-5 sm:gap-6 h-full">
         <GithubContributions client:visible />
         <GithubCalendar client:visible />
       </div>
