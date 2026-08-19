@@ -48,13 +48,6 @@ async function copyEmail() {
           </h2>
           <p class="section-sub mb-0">{{ t.sections.contact_subtitle }}</p>
         </div>
-
-        <div class="status-badge shrink-0 self-start md:self-auto">
-          <span class="status-pulse" aria-hidden="true"></span>
-          <span class="status-text">
-            {{ lang === 'es' ? 'Disponible para proyectos' : 'Open to opportunities' }}
-          </span>
-        </div>
       </div>
 
       <!-- 2-Column Content Grid -->
