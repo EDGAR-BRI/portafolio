@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { Icon } from '@iconify/vue';
 
 interface Props {
   words: string[];
@@ -10,9 +9,9 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  typingSpeed: 90,
-  deletingSpeed: 45,
-  pauseTime: 1600,
+  typingSpeed: 80,
+  deletingSpeed: 40,
+  pauseTime: 2500,
 });
 
 const display = ref('');
@@ -60,9 +59,7 @@ onUnmounted(() => {
 <template>
   <span class="typewriter" aria-live="polite">
     <span class="text">{{ display }}</span>
-    <span class="caret" aria-hidden="true">
-      <Icon icon="lucide:chevron-right" width="14" height="14" />
-    </span>
+    <span class="cursor-block" aria-hidden="true"></span>
   </span>
 </template>
 
@@ -70,20 +67,29 @@ onUnmounted(() => {
 .typewriter {
   display: inline-flex;
   align-items: center;
-  gap: 0.1rem;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   color: var(--accent);
   min-height: 1.2em;
 }
 
-.caret {
-  display: inline-flex;
-  color: var(--accent);
-  animation: blink 1s steps(1) infinite;
-  margin-left: 2px;
+.cursor-block {
+  display: inline-block;
+  width: 0.52em;
+  height: 1.1em;
+  background-color: var(--accent);
+  margin-left: 4px;
+  vertical-align: -0.12em;
+  animation: blink 1s steps(2, start) infinite;
+  box-shadow: 0 0 6px var(--accent);
+  border-radius: 1px;
 }
 
 @keyframes blink {
-  50% { opacity: 0; }
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 </style>
