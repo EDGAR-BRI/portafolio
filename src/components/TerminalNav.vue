@@ -119,9 +119,10 @@ function scrollTo(id: string) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.25rem;
+  gap: 1.5rem;
   flex: 1;
   min-width: 0;
+  margin-right: 1.25rem;
 }
 
 .brand {
