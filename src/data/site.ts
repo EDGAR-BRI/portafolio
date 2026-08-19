@@ -146,8 +146,6 @@ export const skills: SkillItem[] = [
   { name: 'JavaScript',    icon: 'logos:javascript',         category: 'frontend' },
   { name: 'Tailwind CSS',  icon: 'logos:tailwindcss-icon',   category: 'frontend' },
   { name: 'GSAP',          icon: 'simple-icons:gsap',        category: 'frontend' },
-  { name: 'PWA',           icon: 'simple-icons:pwa',         category: 'frontend' },
-  { name: 'SWR',           icon: 'simple-icons:swr',         category: 'frontend' },
   { name: 'AdonisJS',      icon: 'simple-icons:adonisjs',    category: 'backend' },
   { name: 'Node.js',       icon: 'logos:nodejs-icon',        category: 'backend' },
   { name: 'Express',       icon: 'simple-icons:express',     category: 'backend' },
