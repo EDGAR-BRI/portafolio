@@ -5,6 +5,7 @@ import { translations } from '../data/site';
 import GithubLanguages from './GithubLanguages.vue';
 import GithubContributions from './GithubContributions.vue';
 import GithubCalendar from './GithubCalendar.vue';
+import SectionTitle from './SectionTitle.vue';
 
 const lang = useLang();
 const t = computed(() => translations[lang.value]);
@@ -12,11 +13,12 @@ const t = computed(() => translations[lang.value]);
 
 <template>
   <section class="my-12 sm:my-16" id="github-stack">
-    <div class="section-label">[ github ]</div>
-    <h2 class="section-title">
-      <span class="hash">#</span> {{ t.sections.github_langs_title }}
-    </h2>
-    <p class="section-sub">{{ t.sections.github_langs_subtitle }}</p>
+    <SectionTitle
+      :title="t.sections.github_langs_title"
+      :subtitle="t.sections.github_langs_subtitle"
+      id="github-title"
+      path="~/github/stack"
+    />
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 items-stretch">
       <div class="flex flex-col h-full">

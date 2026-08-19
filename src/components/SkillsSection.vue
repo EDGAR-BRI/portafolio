@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLang } from '../stores/lang';
 import { translations, skills, type SkillItem } from '../data/site';
+import SectionTitle from './SectionTitle.vue';
 
 const lang = useLang();
 const t = computed(() => translations[lang.value]);
@@ -53,11 +54,12 @@ function categoryTag(cat: SkillItem['category']): { label: string; color: string
 
 <template>
   <section class="my-12 sm:my-20" id="skills">
-    <div class="section-label">[ skills ]</div>
-    <h2 class="section-title">
-      <span class="hash">#</span> {{ t.sections.skills_title }}
-    </h2>
-    <p class="section-sub">{{ t.sections.skills_subtitle }}</p>
+    <SectionTitle
+      :title="t.sections.skills_title"
+      :subtitle="t.sections.skills_subtitle"
+      id="skills-title"
+      path="~/skills"
+    />
 
     <!-- Category Filter Tabs -->
     <div class="filter-track flex items-center gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">

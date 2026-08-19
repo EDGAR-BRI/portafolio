@@ -4,6 +4,7 @@ import { Icon } from '@iconify/vue';
 import { useLang } from '../stores/lang';
 import { translations, social } from '../data/site';
 import CyberButton from './CyberButton.vue';
+import SectionTitle from './SectionTitle.vue';
 
 const lang = useLang();
 const t = computed(() => translations[lang.value]);
@@ -38,28 +39,21 @@ async function copyEmail() {
 
 <template>
   <section class="my-12 sm:my-20" id="contact">
+    <!-- Top Header Outside Card -->
+    <SectionTitle
+      :title="t.sections.contact_title"
+      id="contact-title"
+      path="~/contact"
+    />
+
     <div class="contact-card corner relative p-6 sm:p-8 md:p-10 bg-[color:var(--bg-soft)] border border-[color:var(--line)]">
-      <div class="section-label">[ contact ]</div>
-
-      <!-- Top Header & Live Status Badge -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        <div>
-          <h2 class="section-title">
-            <span class="hash">#</span> {{ t.sections.contact_title }}
-          </h2>
-          <p class="section-sub mb-0">{{ t.sections.contact_subtitle }}</p>
-        </div>
-
-        <div class="status-badge shrink-0 self-start md:self-auto">
-          <span class="status-pulse" aria-hidden="true"></span>
-          <span class="status-text">
-            {{ lang === 'es' ? 'Disponible para proyectos' : 'Open to opportunities' }}
-          </span>
-        </div>
-      </div>
+      <!-- Subtitle inside card -->
+      <p class="text-[clamp(0.92rem,1.8vw,1rem)] text-[color:var(--muted)] leading-relaxed mb-6 sm:mb-8 max-w-2xl m-0">
+        {{ t.sections.contact_subtitle }}
+      </p>
 
       <!-- 2-Column Content Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch mt-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
         <!-- Left Column: Quick Info Cards -->
         <div class="lg:col-span-5 flex flex-col justify-between gap-3 font-mono text-[0.78rem]">
           <div class="info-item">

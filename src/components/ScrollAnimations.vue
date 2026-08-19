@@ -32,7 +32,7 @@ async function initAnimations() {
       // 1. Projects Section & Cards Stagger Entrance
       const projectCards = document.querySelectorAll('#projects .project-card');
       const projectHeaderEls = document.querySelectorAll(
-        '#projects .section-label, #projects .section-title, #projects .section-sub, #projects .filter-chip'
+        '#projects .section-title, #projects .section-sub, #projects .filter-chip'
       );
 
       if (projectCards.length) {

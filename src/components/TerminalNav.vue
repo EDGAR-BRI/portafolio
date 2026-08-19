@@ -16,8 +16,8 @@ interface NavItem {
 
 const navItems = computed<NavItem[]>(() => [
   { id: 'projects', label: t.value.nav.projects, path: 'projects' },
-  { id: 'live', label: t.value.nav.live, path: 'live' },
-  { id: 'github-stack', label: 'Stack', path: 'stack' },
+  { id: 'live', label: 'GitHub Live', path: 'github/live' },
+  { id: 'github-stack', label: 'GitHub Stack', path: 'github/stack' },
   { id: 'skills', label: t.value.nav.skills, path: 'skills' },
   { id: 'contact', label: t.value.nav.contact, path: 'contact' },
 ]);
@@ -154,13 +154,13 @@ function scrollTo(id: string) {
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 110px;
+  max-width: 180px;
 }
 
 .terminal-nav {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.75rem;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 0.8rem;
   transition: gap 0.2s ease;
@@ -186,6 +186,8 @@ function scrollTo(id: string) {
 
 .nav-link.active {
   color: var(--fg);
+  border-color: rgba(74, 222, 128, 0.3);
+  background: rgba(74, 222, 128, 0.06);
 }
 
 .cmd {

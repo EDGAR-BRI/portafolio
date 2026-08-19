@@ -4,6 +4,7 @@ import { Icon } from '@iconify/vue';
 import { useLang } from '../stores/lang';
 import { translations } from '../data/site';
 import CyberButton from './CyberButton.vue';
+import SectionTitle from './SectionTitle.vue';
 
 interface Project {
   slug: string;
@@ -138,12 +139,12 @@ onUnmounted(() => {
 
 <template>
   <section class="projects-section my-12 sm:my-20" id="projects" aria-labelledby="projects-title">
-    <div class="section-label">[ projects ]</div>
-    <h2 id="projects-title" class="section-title">
-      <span class="hash" aria-hidden="true">#</span>
-      {{ t.sections.projects_title }}
-    </h2>
-    <p class="section-sub">{{ t.sections.projects_subtitle }}</p>
+    <SectionTitle
+      :title="t.sections.projects_title"
+      :subtitle="t.sections.projects_subtitle"
+      id="projects-title"
+      path="~/projects"
+    />
 
     <!-- Filter Bar Matching Live & Contributions Header Style -->
     <div class="flex items-center justify-between mb-4 px-3 py-2 bg-[color:var(--bg-soft)] border border-[color:var(--line)] font-mono text-[0.75rem] tracking-[0.08em] flex-wrap gap-2">

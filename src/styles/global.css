@@ -165,45 +165,31 @@ h1, h2, h3, h4 {
   height: 14px;
 }
 
-.section-label {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: var(--muted);
-  margin-bottom: 0.5rem;
-}
-
-.section-label::before {
-  content: '//';
-  color: var(--accent);
-}
-
 .section-title {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: clamp(1.3rem, 4.5vw, 2rem);
+  font-size: clamp(1.35rem, 3.8vw, 2.05rem);
   font-weight: 700;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.4rem 0;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.5rem;
   color: var(--fg);
   word-break: break-word;
+  letter-spacing: -0.01em;
 }
 
 .section-title .hash {
   color: var(--accent);
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(74, 222, 128, 0.35);
 }
 
 .section-sub {
   color: var(--muted);
-  margin: 0 0 clamp(1.5rem, 3.5vw, 2.5rem) 0;
+  margin: 0 0 clamp(1.2rem, 2.8vw, 1.8rem) 0;
   max-width: 640px;
   line-height: 1.6;
-  font-size: clamp(0.9rem, 2vw, 1rem);
+  font-size: clamp(0.9rem, 1.8vw, 0.98rem);
 }
 
 @media (prefers-reduced-motion: reduce) {
