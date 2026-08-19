@@ -160,6 +160,8 @@ export const skills: SkillItem[] = [
   { name: 'Supabase',      icon: 'simple-icons:supabase',    category: 'database' },
   { name: 'Flutter',       icon: 'logos:flutter',            category: 'mobile' },
   { name: 'Dart',          icon: 'logos:dart',               category: 'mobile' },
+  { name: 'Linux',         icon: 'logos:linux-tux',          category: 'tools' },
+  { name: 'Bash / CLI',    icon: 'logos:bash-icon',          category: 'tools' },
   { name: 'Docker',        icon: 'logos:docker-icon',        category: 'tools' },
   { name: 'Git',           icon: 'logos:git-icon',           category: 'tools' },
 ];
