@@ -210,16 +210,19 @@ const websiteSchema = {
         opacity: 1 !important;
       }
 
-      @media (max-width: 640px) {
+      @media (max-width: 768px) {
         .site-header {
+          display: grid;
+          grid-template-columns: 1fr auto;
+          grid-template-rows: auto auto;
+          align-items: center;
+          gap: 0.45rem 0.5rem;
           padding: 0.55rem 1rem;
-          flex-wrap: wrap;
-          gap: 0.35rem;
         }
 
         .site-header.is-scrolled {
           padding: 0.35rem 0.85rem;
-          gap: 0.25rem;
+          gap: 0.25rem 0.5rem;
         }
 
         main {
@@ -230,10 +233,12 @@ const websiteSchema = {
       @media (max-width: 380px) {
         .site-header {
           padding: 0.45rem 0.75rem;
+          gap: 0.35rem 0.4rem;
         }
 
         .site-header.is-scrolled {
           padding: 0.3rem 0.65rem;
+          gap: 0.2rem 0.4rem;
         }
 
         main {

@@ -130,12 +130,20 @@ function pick(value: Lang) {
   letter-spacing: 0.05em;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .lang-toggle-wrap {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    justify-self: end;
+  }
+
   .lang-toggle-desktop {
     display: none;
   }
+
   .lang-toggle-mobile {
     display: inline-flex;
+    padding: 0.22rem 0.55rem;
   }
 }
 </style>

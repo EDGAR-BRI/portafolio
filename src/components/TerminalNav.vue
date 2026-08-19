@@ -191,25 +191,29 @@ function scrollTo(id: string) {
   color: inherit;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 768px) {
   .terminal-header {
-    flex-wrap: wrap;
-    gap: 0.35rem;
+    display: contents;
   }
 
   .brand {
-    font-size: 0.88rem;
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    font-size: 0.92rem;
+    justify-self: start;
   }
 
   .terminal-nav {
-    gap: 0.45rem;
-    font-size: 0.74rem;
+    grid-column: 1 / 3;
+    grid-row: 2 / 3;
     width: 100%;
-    order: 3;
+    gap: 0.4rem;
+    font-size: 0.72rem;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding: 0.1rem 0 0.25rem;
+    padding: 0.1rem 0;
+    margin: 0;
   }
 
   .terminal-nav::-webkit-scrollbar {
@@ -217,16 +221,18 @@ function scrollTo(id: string) {
   }
 
   .nav-link {
-    padding: 0.2rem 0.5rem;
-    background: rgba(255, 255, 255, 0.02);
+    padding: 0.22rem 0.55rem;
+    background: rgba(18, 24, 32, 0.65);
     border: 1px solid var(--line);
+    border-radius: 3px;
     flex-shrink: 0;
   }
 
   .nav-link.active {
-    border-color: rgba(74, 222, 128, 0.4);
-    background: rgba(74, 222, 128, 0.08);
+    border-color: rgba(74, 222, 128, 0.5);
+    background: rgba(74, 222, 128, 0.12);
     color: var(--accent);
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.15);
   }
 }
 </style>
