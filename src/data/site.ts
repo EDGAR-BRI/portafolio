@@ -131,30 +131,37 @@ export const translations = {
   },
 } as const;
 
-export const skills = [
-  { name: 'Astro',         icon: 'logos:astro-icon' },
-  { name: 'Vue 3',         icon: 'logos:vue' },
-  { name: 'Pinia',         icon: 'simple-icons:pinia' },
-  { name: 'React',         icon: 'logos:react' },
-  { name: 'TypeScript',    icon: 'logos:typescript-icon' },
-  { name: 'JavaScript',    icon: 'logos:javascript' },
-  { name: 'AdonisJS',      icon: 'simple-icons:adonisjs' },
-  { name: 'Node.js',       icon: 'logos:nodejs-icon' },
-  { name: 'Express',       icon: 'simple-icons:express' },
-  { name: 'Prisma',        icon: 'simple-icons:prisma' },
-  { name: 'Supabase',      icon: 'simple-icons:supabase' },
-  { name: 'PostgreSQL',    icon: 'logos:postgresql' },
-  { name: 'MySQL',         icon: 'logos:mysql' },
-  { name: 'SQLite',        icon: 'logos:sqlite' },
-  { name: 'Redis',         icon: 'logos:redis' },
-  { name: 'Flutter',       icon: 'logos:flutter' },
-  { name: 'Dart',          icon: 'logos:dart' },
-  { name: 'PHP',           icon: 'logos:php' },
-  { name: 'Tailwind CSS',  icon: 'logos:tailwindcss-icon' },
-  { name: 'GSAP',          icon: 'simple-icons:gsap' },
-  { name: 'SWR',           icon: 'simple-icons:swr' },
-  { name: 'Docker',        icon: 'logos:docker-icon' },
-  { name: 'PWA',           icon: 'simple-icons:pwa' },
+export interface SkillItem {
+  name: string;
+  icon: string;
+  category: 'frontend' | 'backend' | 'database' | 'mobile' | 'tools';
+}
+
+export const skills: SkillItem[] = [
+  { name: 'Astro',         icon: 'logos:astro-icon',         category: 'frontend' },
+  { name: 'Vue 3',         icon: 'logos:vue',                category: 'frontend' },
+  { name: 'Pinia',         icon: 'simple-icons:pinia',       category: 'frontend' },
+  { name: 'React',         icon: 'logos:react',              category: 'frontend' },
+  { name: 'TypeScript',    icon: 'logos:typescript-icon',    category: 'frontend' },
+  { name: 'JavaScript',    icon: 'logos:javascript',         category: 'frontend' },
+  { name: 'Tailwind CSS',  icon: 'logos:tailwindcss-icon',   category: 'frontend' },
+  { name: 'GSAP',          icon: 'simple-icons:gsap',        category: 'frontend' },
+  { name: 'PWA',           icon: 'simple-icons:pwa',         category: 'frontend' },
+  { name: 'SWR',           icon: 'simple-icons:swr',         category: 'frontend' },
+  { name: 'AdonisJS',      icon: 'simple-icons:adonisjs',    category: 'backend' },
+  { name: 'Node.js',       icon: 'logos:nodejs-icon',        category: 'backend' },
+  { name: 'Express',       icon: 'simple-icons:express',     category: 'backend' },
+  { name: 'PHP',           icon: 'logos:php',                category: 'backend' },
+  { name: 'Prisma',        icon: 'simple-icons:prisma',      category: 'backend' },
+  { name: 'PostgreSQL',    icon: 'logos:postgresql',         category: 'database' },
+  { name: 'MySQL',         icon: 'logos:mysql',              category: 'database' },
+  { name: 'SQLite',        icon: 'logos:sqlite',             category: 'database' },
+  { name: 'Redis',         icon: 'logos:redis',              category: 'database' },
+  { name: 'Supabase',      icon: 'simple-icons:supabase',    category: 'database' },
+  { name: 'Flutter',       icon: 'logos:flutter',            category: 'mobile' },
+  { name: 'Dart',          icon: 'logos:dart',               category: 'mobile' },
+  { name: 'Docker',        icon: 'logos:docker-icon',        category: 'tools' },
+  { name: 'Git',           icon: 'logos:git-icon',           category: 'tools' },
 ];
 
 export const social = {
