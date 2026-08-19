@@ -29,53 +29,44 @@ async function initAnimations() {
       const { reduceMotion } = context.conditions as { reduceMotion: boolean };
       if (reduceMotion) return;
 
-      // 1. Projects Section & Cards Entrance
-      const projectsSection = document.querySelector('#projects');
-      const projectHeaderEls = document.querySelectorAll(
-        '#projects .section-label, #projects .section-title, #projects .section-sub'
-      );
+      // 1. Projects Section & Cards Stagger Entrance
       const projectCards = document.querySelectorAll('#projects .project-card');
+      const projectHeaderEls = document.querySelectorAll(
+        '#projects .section-label, #projects .section-title, #projects .section-sub, #projects .filter-chip'
+      );
 
-      if (projectsSection) {
-        const isNearTop = projectsSection.getBoundingClientRect().top < window.innerHeight * 0.9;
-
+      if (projectCards.length) {
         const projectsTl = gsap.timeline({
           scrollTrigger: {
             trigger: '#projects',
-            start: 'top 85%',
+            start: 'top 82%',
             once: true,
           },
-          delay: isNearTop ? 0.35 : 0,
         });
 
         if (projectHeaderEls.length) {
-          projectsTl.fromTo(
-            projectHeaderEls,
-            { autoAlpha: 0, y: 22 },
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.55,
-              stagger: 0.08,
-              ease: 'power2.out',
-            }
-          );
+          projectsTl.from(projectHeaderEls, {
+            opacity: 0,
+            y: 18,
+            duration: 0.45,
+            stagger: 0.05,
+            ease: 'power2.out',
+            clearProps: 'opacity,transform',
+          });
         }
 
-        if (projectCards.length) {
-          projectsTl.fromTo(
-            projectCards,
-            { autoAlpha: 0, y: 35 },
-            {
-              autoAlpha: 1,
-              y: 0,
-              duration: 0.6,
-              stagger: 0.08,
-              ease: 'power2.out',
-            },
-            '-=0.3'
-          );
-        }
+        projectsTl.from(
+          projectCards,
+          {
+            opacity: 0,
+            y: 30,
+            duration: 0.55,
+            stagger: 0.07,
+            ease: 'power2.out',
+            clearProps: 'opacity,transform',
+          },
+          projectHeaderEls.length ? '-=0.2' : 0
+        );
       }
 
       // 2. Other sections reveal on scroll (Live, GitHub Stack, Skills, Contact)
@@ -83,61 +74,21 @@ async function initAnimations() {
         '#live, #github-stack, #skills, #contact'
       );
       otherSections.forEach((section) => {
-        gsap.fromTo(
-          section,
-          { autoAlpha: 0, y: 30 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.65,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top 84%',
-              once: true,
-            },
-          }
-        );
-      });
-
-      // 3. Skill Items Stagger
-      const skillItems = document.querySelectorAll('#skills .skill-item');
-      if (skillItems.length) {
-        gsap.fromTo(
-          skillItems,
-          { autoAlpha: 0, y: 18, scale: 0.96 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.45,
-            stagger: 0.035,
-            ease: 'back.out(1.2)',
-            scrollTrigger: {
-              trigger: '#skills',
-              start: 'top 80%',
-              once: true,
-            },
-          }
-        );
-      }
-
-      // 4. Subtle parallax on hero on scroll
-      const hero = document.querySelector('.hero');
-      if (hero) {
-        gsap.to(hero, {
-          yPercent: 8,
-          ease: 'none',
+        gsap.from(section, {
+          opacity: 0,
+          y: 28,
+          duration: 0.6,
+          ease: 'power2.out',
+          clearProps: 'opacity,transform',
           scrollTrigger: {
-            trigger: hero,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: true,
+            trigger: section,
+            start: 'top 85%',
+            once: true,
           },
         });
-      }
+      });
 
-      // 5. Subtle parallax on background grid
+      // 3. Subtle parallax on background grid
       const grid = document.querySelector('.bg-grid');
       if (grid) {
         gsap.to(grid, {

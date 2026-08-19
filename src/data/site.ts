@@ -171,8 +171,7 @@ export const social = {
 
 export const featured_slugs = [
   'GuardTech',
-  'internships-front',
-  'internships-back',
+  'internships-system',
   'LinuxComanTrainer',
   'MI-CANCIONERO-FRONTEND',
   'FRONTEND-SOCIOECONOMICO',

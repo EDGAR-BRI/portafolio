@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLang } from '../stores/lang';
 import { translations, social } from '../data/site';
+import CyberButton from './CyberButton.vue';
 
 const lang = useLang();
 const t = computed(() => translations[lang.value]);
@@ -47,6 +48,13 @@ async function copyEmail() {
             <span class="hash">#</span> {{ t.sections.contact_title }}
           </h2>
           <p class="section-sub mb-0">{{ t.sections.contact_subtitle }}</p>
+        </div>
+
+        <div class="status-badge shrink-0 self-start md:self-auto">
+          <span class="status-pulse" aria-hidden="true"></span>
+          <span class="status-text">
+            {{ lang === 'es' ? 'Disponible para proyectos' : 'Open to opportunities' }}
+          </span>
         </div>
       </div>
 
@@ -119,31 +127,27 @@ async function copyEmail() {
             <div class="text-[color:var(--muted)]">EOF</div>
           </div>
 
-          <!-- Action Buttons -->
+          <!-- Action Buttons using CyberButton -->
           <div class="action-row flex flex-col sm:flex-row gap-3">
-            <a
+            <CyberButton
               :href="`mailto:${social.email}`"
-              class="contact-btn-primary flex-1"
+              variant="primary"
+              size="md"
+              icon="lucide:send"
+              class="flex-1"
             >
-              <Icon
-                icon="lucide:send"
-                width="15"
-                height="15"
-                class="contact-btn-icon"
-              />
-              <span class="contact-btn-text">{{ t.sections.contact_btn }}</span>
-            </a>
+              {{ t.sections.contact_btn }}
+            </CyberButton>
 
-            <a
+            <CyberButton
               :href="social.github"
+              variant="secondary"
+              size="md"
+              icon="lucide:github"
               target="_blank"
-              rel="noopener noreferrer"
-              class="contact-btn-secondary"
             >
-              <Icon icon="lucide:github" width="15" height="15" class="github-icon" />
-              <span class="github-text">GitHub</span>
-              <Icon icon="lucide:external-link" width="12" height="12" class="external-icon" />
-            </a>
+              GitHub
+            </CyberButton>
           </div>
         </div>
       </div>
@@ -231,95 +235,5 @@ async function copyEmail() {
   background: var(--accent);
   border-color: var(--accent);
   color: #06080b;
-}
-
-.contact-btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  padding: 0.65rem 1.25rem;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.88rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  text-decoration: none;
-  border: 1px solid var(--accent);
-  background: rgba(74, 222, 128, 0.1);
-  color: var(--fg);
-  border-radius: 2px;
-  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-  cursor: pointer;
-}
-
-.contact-btn-primary .contact-btn-icon {
-  color: var(--accent);
-  transition: color 0.18s ease, transform 0.18s ease;
-  flex-shrink: 0;
-}
-
-.contact-btn-primary .contact-btn-text {
-  color: var(--fg);
-  transition: color 0.18s ease;
-}
-
-.contact-btn-primary:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  box-shadow: 0 0 16px rgba(74, 222, 128, 0.35);
-}
-
-.contact-btn-primary:hover .contact-btn-icon,
-.contact-btn-primary:hover .contact-btn-text {
-  color: #06080b !important;
-}
-
-.contact-btn-primary:hover .contact-btn-icon {
-  transform: translateX(2px);
-}
-
-.contact-btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-  padding: 0.65rem 1.15rem;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 0.88rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  text-decoration: none;
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--fg);
-  border-radius: 2px;
-  transition: all 0.18s ease;
-  cursor: pointer;
-}
-
-.contact-btn-secondary .github-icon {
-  color: var(--accent);
-  flex-shrink: 0;
-}
-
-.contact-btn-secondary .github-text {
-  color: var(--fg);
-  transition: color 0.18s ease;
-}
-
-.contact-btn-secondary .external-icon {
-  color: var(--muted);
-  transition: color 0.18s ease;
-  flex-shrink: 0;
-}
-
-.contact-btn-secondary:hover {
-  border-color: var(--accent);
-  background: rgba(74, 222, 128, 0.08);
-}
-
-.contact-btn-secondary:hover .github-text,
-.contact-btn-secondary:hover .external-icon {
-  color: var(--accent);
 }
 </style>

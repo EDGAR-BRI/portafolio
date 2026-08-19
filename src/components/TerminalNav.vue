@@ -15,8 +15,8 @@ interface NavItem {
 }
 
 const navItems = computed<NavItem[]>(() => [
-  { id: 'top', label: t.value.nav.projects, path: 'projects' },
-  { id: 'live', label: t.value.nav.live, path: 'github' },
+  { id: 'projects', label: t.value.nav.projects, path: 'projects' },
+  { id: 'live', label: t.value.nav.live, path: 'live' },
   { id: 'github-stack', label: 'Stack', path: 'stack' },
   { id: 'skills', label: t.value.nav.skills, path: 'skills' },
   { id: 'contact', label: t.value.nav.contact, path: 'contact' },
@@ -24,11 +24,17 @@ const navItems = computed<NavItem[]>(() => [
 
 function updateActive() {
   if (typeof window === 'undefined') return;
-  const triggerLine = window.innerHeight * 0.45;
+  const scrollY = window.scrollY;
+  const triggerLine = window.innerHeight * 0.4;
 
-  let activeId = 'top';
+  if (scrollY < 120) {
+    currentSegment.value = '';
+    return;
+  }
 
-  // First: the section whose bounds straddle the trigger line.
+  let activeId = '';
+
+  // First: check which section intersects the trigger line.
   for (const item of navItems.value) {
     const el = document.getElementById(item.id);
     if (!el) continue;
@@ -39,8 +45,8 @@ function updateActive() {
     }
   }
 
-  // Fallback: last section already above the trigger line.
-  if (activeId === 'top') {
+  // Fallback: last section passed above the trigger line.
+  if (!activeId) {
     for (const item of navItems.value) {
       const el = document.getElementById(item.id);
       if (!el) continue;
@@ -51,7 +57,7 @@ function updateActive() {
     }
   }
 
-  if (activeId === 'top') {
+  if (!activeId) {
     currentSegment.value = '';
   } else {
     const item = navItems.value.find((n) => n.id === activeId);
@@ -98,7 +104,7 @@ function scrollTo(id: string) {
         :key="item.id"
         :href="'#' + item.id"
         class="nav-link"
-        :class="{ active: currentSegment === '/' + item.path || (item.id === 'top' && !currentSegment) }"
+        :class="{ active: currentSegment === '/' + item.path }"
         @click.prevent="scrollTo(item.id)"
       >
         <span class="cmd">cd</span>

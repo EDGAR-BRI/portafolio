@@ -11,15 +11,16 @@ import ScrollAnimations from '../components/ScrollAnimations.vue';
 import { getCollection } from 'astro:content';
 
 const entries = await getCollection('proyectos');
-const projects = entries.map((e) => e.data);
+const projects = entries.map((e) => ({
+  ...e.data,
+  slug: e.id ? e.id.replace(/\.(es|en)$/, '') : (e.data.title || '').toLowerCase().replace(/\s+/g, '-'),
+}));
 ---
 
 <Base>
   <ScrollAnimations client:load />
   <HeroSection client:load />
-  <div id="projects">
-    <ProjectsGrid projects={projects} client:load />
-  </div>
+  <ProjectsGrid projects={projects} client:load />
   <LiveSection client:visible />
   <GithubSection client:visible />
   <SkillsSection client:load />
