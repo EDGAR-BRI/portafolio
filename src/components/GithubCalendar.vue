@@ -145,10 +145,27 @@ const stats = computed(() => {
   return { total, activeDays, longest, currentStreak };
 });
 
-function scrollToLatest() {
-  if (calendarWrapRef.value) {
-    calendarWrapRef.value.scrollLeft = calendarWrapRef.value.scrollWidth;
+const todayIso = computed(() => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+});
+
+function scrollToCurrentDate() {
+  if (!calendarWrapRef.value) return;
+  const wrap = calendarWrapRef.value;
+
+  if (year.value === currentYear) {
+    const todayCell = wrap.querySelector(`.cell[data-date="${todayIso.value}"]`) as HTMLElement | null;
+    if (todayCell) {
+      const cellRight = todayCell.offsetLeft + todayCell.offsetWidth;
+      const wrapWidth = wrap.clientWidth;
+      const targetScroll = Math.max(0, cellRight - wrapWidth + 40);
+      wrap.scrollLeft = targetScroll;
+      return;
+    }
   }
+
+  wrap.scrollLeft = wrap.scrollWidth;
 }
 
 function scrollCalendar(direction: 'left' | 'right') {
@@ -164,7 +181,9 @@ async function load() {
   if (cached && cached.contributions) {
     contributions.value = cached.contributions;
     loading.value = false;
-    nextTick(scrollToLatest);
+    nextTick(() => {
+      setTimeout(scrollToCurrentDate, 30);
+    });
     return;
   }
   loading.value = true;
@@ -181,7 +200,9 @@ async function load() {
     const data = await res.json();
     contributions.value = (data.contributions ?? []) as DayContribution[];
     setCached(cacheKey, data);
-    nextTick(scrollToLatest);
+    nextTick(() => {
+      setTimeout(scrollToCurrentDate, 30);
+    });
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'unknown';
   } finally {
@@ -196,7 +217,10 @@ function refresh() {
 }
 
 watch(year, () => load());
-onMounted(load);
+onMounted(() => {
+  load();
+  window.addEventListener('resize', scrollToCurrentDate, { passive: true });
+});
 </script>
 
 <template>
@@ -333,7 +357,12 @@ onMounted(load);
             v-for="(cell, idx) in flatCells"
             :key="idx"
             class="cell"
-            :class="{ 'is-empty': cell.empty, 'has-activity': cell.count > 0 }"
+            :data-date="cell.date"
+            :class="{
+              'is-empty': cell.empty,
+              'has-activity': cell.count > 0,
+              'is-today': cell.date === todayIso,
+            }"
             :style="{
               gridColumn: cell.col,
               gridRow: cell.row,
@@ -568,6 +597,12 @@ onMounted(load);
 
 .cell.has-activity {
   border-color: rgba(74, 222, 128, 0.15);
+}
+
+.cell.is-today {
+  outline: 1.5px solid var(--accent);
+  outline-offset: 1px;
+  box-shadow: 0 0 6px rgba(74, 222, 128, 0.4);
 }
 
 .cell:hover:not(.is-empty) {
